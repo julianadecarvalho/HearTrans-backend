@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProvidersController = void 0;
 const common_1 = require("@nestjs/common");
 const providers_service_1 = require("./providers.service");
+const create_provider_dto_1 = require("./dto/create-provider.dto");
+const class_validator_1 = require("class-validator");
 let ProvidersController = class ProvidersController {
     constructor(providersService) {
         this.providersService = providersService;
@@ -27,13 +29,23 @@ let ProvidersController = class ProvidersController {
             providers
         };
     }
-    async createProviders(data) {
-        const provider = await this.providersService.create(data);
-        return {
-            statusCode: common_1.HttpStatus.OK,
-            message: 'Provider created successfully',
-            provider
-        };
+    async createProvider(data) {
+        try {
+            class_validator_1.validateOrReject(data);
+            const provider = await this.providersService.create(data);
+            return {
+                statusCode: common_1.HttpStatus.OK,
+                message: 'Provider created successfully',
+                provider
+            };
+        }
+        catch (errors) {
+            return {
+                statusCode: common_1.HttpStatus.BAD_REQUEST,
+                message: 'Caught promise rejection (validation failed).',
+                errors: errors
+            };
+        }
     }
     async readProvider(id) {
         const data = await this.providersService.showOne(id);
@@ -51,11 +63,20 @@ let ProvidersController = class ProvidersController {
         };
     }
     async deleteProvider(id) {
-        await this.providersService.remove(id);
-        return {
-            statusCode: common_1.HttpStatus.OK,
-            message: 'Provider deleted successfully',
-        };
+        try {
+            const response = await this.providersService.remove(id);
+            return {
+                statusCode: common_1.HttpStatus.OK,
+                message: 'Provider deleted successfully',
+                response: response,
+            };
+        }
+        catch (errors) {
+            return {
+                statusCode: common_1.HttpStatus.BAD_REQUEST,
+                errors: errors
+            };
+        }
     }
 };
 __decorate([
@@ -68,9 +89,9 @@ __decorate([
     common_1.Post(),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_provider_dto_1.CreateProviderDto]),
     __metadata("design:returntype", Promise)
-], ProvidersController.prototype, "createProviders", null);
+], ProvidersController.prototype, "createProvider", null);
 __decorate([
     common_1.Get(':id'),
     __param(0, common_1.Param('id')),

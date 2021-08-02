@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProvidersEntity } from './provider.entity';
-import { ProvidersDTO } from './dto/provider.dto';
+import { CreateProviderDto } from './dto/create-provider.dto';
+
 
 @Injectable()
 export class ProvidersService {
@@ -11,13 +12,18 @@ export class ProvidersService {
         private providersRepository: Repository<ProvidersEntity>,
     ) { }
 
-    create(data: ProvidersDTO): Promise<ProvidersEntity> {
-        const user = this.providersRepository.create(data);
-        this.providersRepository.save(data);
-        return this.providersRepository.findOne(user.id);
+    async create(data: CreateProviderDto): Promise<ProvidersEntity> {
+        // we have to make sure to return an error when the data
+        // doesn't conform to what we expect
+        // (right now it will try to create it
+        // say that it did and crash)
+
+        this.providersRepository.create(data);
+        const provider = await this.providersRepository.save(data);
+        return provider;
     }
 
-    update(id: number, data: Partial<ProvidersDTO>): Promise<ProvidersEntity> {
+    update(id: number, data: Partial<CreateProviderDto>): Promise<ProvidersEntity> {
         this.providersRepository.update({ id }, data);
         return this.providersRepository.findOne({ id });
     }

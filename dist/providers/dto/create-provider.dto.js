@@ -14,8 +14,12 @@ const class_validator_1 = require("class-validator");
 class CreateProviderDto {
 }
 __decorate([
+    class_validator_1.IsInt(),
+    __metadata("design:type", Number)
+], CreateProviderDto.prototype, "id", void 0);
+__decorate([
     class_validator_1.IsString(),
     __metadata("design:type", String)
-], CreateProviderDto.prototype, "name", void 0);
+], CreateProviderDto.prototype, "fullName", void 0);
 exports.CreateProviderDto = CreateProviderDto;
 //# sourceMappingURL=create-provider.dto.js.map

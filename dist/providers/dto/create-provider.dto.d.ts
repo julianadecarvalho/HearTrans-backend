@@ -1,3 +1,4 @@
 export declare class CreateProviderDto {
-    readonly name: string;
+    readonly id?: number;
+    readonly fullName: string;
 }

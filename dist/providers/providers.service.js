@@ -21,10 +21,10 @@ let ProvidersService = class ProvidersService {
     constructor(providersRepository) {
         this.providersRepository = providersRepository;
     }
-    create(data) {
-        const user = this.providersRepository.create(data);
-        this.providersRepository.save(data);
-        return this.providersRepository.findOne(user.id);
+    async create(data) {
+        this.providersRepository.create(data);
+        const provider = await this.providersRepository.save(data);
+        return provider;
     }
     update(id, data) {
         this.providersRepository.update({ id }, data);
