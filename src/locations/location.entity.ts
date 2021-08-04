@@ -12,7 +12,10 @@ export class LocationsEntity {
     locationTypes: string[];
 
     @Column()
-    url: string;
+    googleMapsUrl: string;
+
+    @Column()
+    locationUrl: string;
 
     @Column()
     latitude: string;
