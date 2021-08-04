@@ -13,7 +13,6 @@ export class ProvidersService {
     ) { }
 
     async create(data: CreateProviderDto): Promise<ProvidersEntity> {
-        //add an api call to google places here to populate the data
         this.providersRepository.create(data);
         const provider = await this.providersRepository.save(data);
         return provider;
