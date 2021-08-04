@@ -10,8 +10,8 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 
+import { ParseIntPipe } from '../common/parse-int.pipe';
 import { ProvidersService } from './providers.service';
-import { Provider } from './dto/provider.interface';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { validateOrReject } from 'class-validator';
 import { ProvidersEntity } from './provider.entity';
@@ -50,7 +50,7 @@ export class ProvidersController {
     }
 
     @Get(':id')
-    async readProvider(@Param('id') id: number) {
+    async readProvider(@Param('id', new ParseIntPipe()) id: number) {
         const provider: ProvidersEntity = await this.providersService.showOne(id);
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
@@ -63,7 +63,7 @@ export class ProvidersController {
     }
 
     @Patch(':id')
-    async uppdateProvider(@Param('id') id: number, @Body() data: Partial<CreateProviderDto>) {
+    async uppdateProvider(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateProviderDto>) {
         const provider: ProvidersEntity = await this.providersService.showOne(id);
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
@@ -86,7 +86,7 @@ export class ProvidersController {
     }
 
     @Delete(':id')
-    async deleteProvider(@Param('id') id: number) {
+    async deleteProvider(@Param('id', new ParseIntPipe()) id: number) {
         const provider: ProvidersEntity = await this.providersService.showOne(id);
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
