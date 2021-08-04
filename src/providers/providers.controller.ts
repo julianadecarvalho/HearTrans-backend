@@ -31,6 +31,7 @@ export class ProvidersController {
     }
 
     @Post()
+    // add api call to google here to populate the data
     async createProvider(@Body() data: CreateProviderDto) {
         try {
             validateOrReject(data)

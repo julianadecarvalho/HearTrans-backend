@@ -31,6 +31,8 @@ export class LocationsController {
     }
 
     @Post()
+    // add call to google api around here to create the location data
+    // we should look into json parsing for this 
     async createLocation(@Body() data: CreateLocationDto) {
         try {
             validateOrReject(data)
