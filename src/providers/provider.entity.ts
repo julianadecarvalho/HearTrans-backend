@@ -1,23 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProviderReviewsEntity } from 'src/provider-reviews/provider-review.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class ProvidersEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: "integer" })
     id: number;
 
-    @Column()
+    @Column({ type: "text" })
     fullName: string;
 
-    @Column()
-    readonly otherNames: string[];
+    @Column({ type: "simple-array" })
+    otherNames: string[];
 
-    @Column() //MD, NP, etc?
-    readonly titles: string[];
+    @Column({ type: "simple-array" }) //MD, NP, etc?
+    titles: string[];
 
-    @Column()
-    readonly specialties: string[];
+    @Column({ type: "simple-array" })
+    specialties: string[];
 
-    @Column() //should we add a dropdown selector in form?
-    readonly languages: string[];
+    @Column({ type: "simple-array" }) //should we add a dropdown selector in form?
+    languages: string[];
 
+    @Column({ type: "simple-array" }) //STI, HIV care, primary, therapy, etc
+    services: string[];
+
+    @Column({ type: "boolean", nullable: true })
+    remoteVisits: boolean;
+
+    @Column({ type: "boolean", nullable: true })
+    slidingScalePay: boolean;
+
+    @OneToMany(() => ProviderReviewsEntity, review => review.provider)
+    reviews: ProviderReviewsEntity[];
 }
