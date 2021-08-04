@@ -48,35 +48,47 @@ let ProvidersController = class ProvidersController {
         }
     }
     async readProvider(id) {
-        const data = await this.providersService.showOne(id);
+        const provider = await this.providersService.showOne(id);
+        if (provider === undefined) {
+            throw new common_1.NotFoundException('Invalid provider id');
+        }
         return {
             statusCode: common_1.HttpStatus.OK,
             message: 'Provider fetched successfully',
-            data,
+            provider,
         };
     }
     async uppdateProvider(id, data) {
-        await this.providersService.update(id, data);
-        return {
-            statusCode: common_1.HttpStatus.OK,
-            message: 'Provider updated successfully',
-        };
-    }
-    async deleteProvider(id) {
+        const provider = await this.providersService.showOne(id);
+        if (provider === undefined) {
+            throw new common_1.NotFoundException('Invalid provider id');
+        }
         try {
-            const response = await this.providersService.remove(id);
+            class_validator_1.validateOrReject(data);
+            await this.providersService.update(id, data);
             return {
                 statusCode: common_1.HttpStatus.OK,
-                message: 'Provider deleted successfully',
-                response: response,
+                message: 'Provider updated successfully',
             };
         }
         catch (errors) {
             return {
                 statusCode: common_1.HttpStatus.BAD_REQUEST,
+                message: 'Caught promise rejection (validation failed).',
                 errors: errors
             };
         }
+    }
+    async deleteProvider(id) {
+        const provider = await this.providersService.showOne(id);
+        if (provider === undefined) {
+            throw new common_1.NotFoundException('Invalid provider id');
+        }
+        await this.providersService.remove(id);
+        return {
+            statusCode: common_1.HttpStatus.OK,
+            message: 'Provider deleted successfully',
+        };
     }
 };
 __decorate([

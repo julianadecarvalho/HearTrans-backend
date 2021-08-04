@@ -13,11 +13,6 @@ export class ProvidersService {
     ) { }
 
     async create(data: CreateProviderDto): Promise<ProvidersEntity> {
-        // we have to make sure to return an error when the data
-        // doesn't conform to what we expect
-        // (right now it will try to create it
-        // say that it did and crash)
-
         this.providersRepository.create(data);
         const provider = await this.providersRepository.save(data);
         return provider;

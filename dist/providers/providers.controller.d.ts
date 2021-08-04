@@ -1,19 +1,19 @@
 import { HttpStatus } from '@nestjs/common';
 import { ProvidersService } from './providers.service';
-import { Provider } from './dto/provider.interface';
 import { CreateProviderDto } from './dto/create-provider.dto';
+import { ProvidersEntity } from './provider.entity';
 export declare class ProvidersController {
     private providersService;
     constructor(providersService: ProvidersService);
     showAllProviders(): Promise<{
         statusCode: HttpStatus;
         message: string;
-        providers: import("./provider.entity").ProvidersEntity[];
+        providers: ProvidersEntity[];
     }>;
     createProvider(data: CreateProviderDto): Promise<{
         statusCode: HttpStatus;
         message: string;
-        provider: import("./provider.entity").ProvidersEntity;
+        provider: ProvidersEntity;
         errors?: undefined;
     } | {
         statusCode: HttpStatus;
@@ -24,21 +24,19 @@ export declare class ProvidersController {
     readProvider(id: number): Promise<{
         statusCode: HttpStatus;
         message: string;
-        data: import("./provider.entity").ProvidersEntity;
+        provider: ProvidersEntity;
     }>;
-    uppdateProvider(id: number, data: Partial<Provider>): Promise<{
+    uppdateProvider(id: number, data: Partial<CreateProviderDto>): Promise<{
         statusCode: HttpStatus;
         message: string;
+        errors?: undefined;
+    } | {
+        statusCode: HttpStatus;
+        message: string;
+        errors: any;
     }>;
     deleteProvider(id: number): Promise<{
         statusCode: HttpStatus;
         message: string;
-        response: void;
-        errors?: undefined;
-    } | {
-        statusCode: HttpStatus;
-        errors: any;
-        message?: undefined;
-        response?: undefined;
     }>;
 }

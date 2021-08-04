@@ -21,5 +21,17 @@ __decorate([
     class_validator_1.IsString(),
     __metadata("design:type", String)
 ], CreateProviderDto.prototype, "fullName", void 0);
+__decorate([
+    class_validator_1.IsString({ each: true }),
+    __metadata("design:type", Set)
+], CreateProviderDto.prototype, "otherNames", void 0);
+__decorate([
+    class_validator_1.IsString({ each: true }),
+    __metadata("design:type", Set)
+], CreateProviderDto.prototype, "specialties", void 0);
+__decorate([
+    class_validator_1.IsString({ each: true }),
+    __metadata("design:type", Set)
+], CreateProviderDto.prototype, "languages", void 0);
 exports.CreateProviderDto = CreateProviderDto;
 //# sourceMappingURL=create-provider.dto.js.map
