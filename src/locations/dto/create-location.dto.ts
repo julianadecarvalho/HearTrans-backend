@@ -1,4 +1,4 @@
-import { IsInt, IsNumberString, IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
+import { IsInt, IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
 
 export class CreateLocationDto {
     @IsInt()
@@ -11,7 +11,10 @@ export class CreateLocationDto {
     readonly locationTypes: string[];
 
     @IsString()
-    readonly url: string
+    readonly googleMapsUrl: string;
+
+    @IsString()
+    readonly locationUrl?: string;
 
     @IsLatitude()
     readonly latitude: string;
