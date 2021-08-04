@@ -1,4 +1,4 @@
-import { IsInt, IsNumberString, IsString, IsPhoneNumber } from 'class-validator';
+import { IsInt, IsNumberString, IsString, IsPhoneNumber, IsBoolean } from 'class-validator';
 
 export class CreateProviderDto {
     @IsInt()
@@ -18,5 +18,14 @@ export class CreateProviderDto {
 
     @IsString({ each: true }) //should we add a dropdown selector in form?
     readonly languages: string[];
+
+    @IsString({ each: true }) //STI, HIV care, primary, therapy, etc
+    readonly services: string[];
+
+    @IsBoolean()
+    readonly remoteVisits?: boolean;
+
+    @IsBoolean()
+    readonly slidingScalePay?: boolean;
 
 }
