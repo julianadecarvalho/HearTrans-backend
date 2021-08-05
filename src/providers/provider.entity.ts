@@ -1,5 +1,6 @@
 import { ProviderReviewsEntity } from 'src/provider-reviews/provider-review.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { LocationsEntity } from 'src/locations/location.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class ProvidersEntity {
@@ -32,4 +33,8 @@ export class ProvidersEntity {
 
     @OneToMany(() => ProviderReviewsEntity, review => review.provider)
     reviews: ProviderReviewsEntity[];
+
+    @ManyToMany(() => LocationsEntity)
+    @JoinTable()
+    locations: LocationsEntity[];
 }

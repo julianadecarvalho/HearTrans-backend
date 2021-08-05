@@ -90,8 +90,8 @@ export class LocationsController {
         }
     }
 
-    @Patch(':locationId/:providerId')
-    async addProvider(@Param('locationId', new ParseIntPipe()) locationId: number, @Param('providerId', new ParseIntPipe()) providerId: number,) {
+    @Patch(':providerId/:locationId')
+    async addLocation(@Param('locationId', new ParseIntPipe()) locationId: number, @Param('providerId', new ParseIntPipe()) providerId: number,) {
         const location: LocationsEntity = await this.locationsService.showOne(locationId);
         if (location === undefined) {
             throw new NotFoundException('Invalid location id');
@@ -101,11 +101,11 @@ export class LocationsController {
             throw new NotFoundException('Invalid provider id');
         }
         try {
-            location.providers.push(provider)
-            await this.locationsService.update(locationId, location);
+            provider.locations.push(location)
+            await this.locationsService.update(locationId, provider);
             return {
                 statusCode: HttpStatus.OK,
-                message: 'Location updated successfully',
+                message: 'Provider updated successfully',
             };
         } catch (errors) {
             return {
