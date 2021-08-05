@@ -1,35 +1,40 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProvidersEntity } from 'src/providers/provider.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class LocationsEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: "text" })
     locationName: string;
 
-    @Column()
+    @Column({ type: "simple-array" })
     locationTypes: string[];
 
-    @Column()
+    @Column({ type: "text" })
     googleMapsUrl: string;
 
-    @Column()
+    @Column({ type: "text" })
     locationUrl: string;
 
-    @Column()
+    @Column({ type: "text" })
     latitude: string;
 
-    @Column()
+    @Column({ type: "text" })
     longitude: string;
 
-    @Column()
+    @Column({ type: "text" })
     phone: string;
 
-    @Column()
+    @Column({ type: "text" })
     address: string;
 
-    @Column()
+    @Column({ type: "text" })
     google_place_id: string;
+
+    @ManyToMany(() => ProvidersEntity)
+    @JoinTable()
+    providers: ProvidersEntity[];
 
 }

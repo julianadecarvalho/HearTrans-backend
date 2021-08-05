@@ -1,4 +1,5 @@
 import { IsInt, IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class CreateLocationDto {
     @IsInt()
@@ -30,5 +31,7 @@ export class CreateLocationDto {
     
     @IsString()
     readonly google_place_id: string;
+
+    providers?: ProvidersEntity[];
 
 }
