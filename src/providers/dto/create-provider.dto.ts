@@ -1,5 +1,5 @@
 import { IsInt, IsNumberString, IsString, IsPhoneNumber, IsBoolean } from 'class-validator';
-
+import { LocationsEntity } from 'src/locations/location.entity';
 export class CreateProviderDto {
     @IsInt()
     readonly id?: number;
@@ -28,4 +28,5 @@ export class CreateProviderDto {
     @IsBoolean()
     readonly slidingScalePay?: boolean;
 
+    locations?: LocationsEntity[];
 }
