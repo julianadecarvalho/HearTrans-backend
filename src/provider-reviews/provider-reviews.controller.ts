@@ -47,7 +47,7 @@ export class ProviderReviewsController {
             throw new NotFoundException('Invalid provider id');
         }
         try {
-            data.providerId = providerId 
+            data.provider = provider 
             validateOrReject(data)
             const review = await this.providerReviewsService.create(data);
             return {
