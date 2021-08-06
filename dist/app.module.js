@@ -13,8 +13,8 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
+const locations_module_1 = require("./locations/locations.module");
+const provider_reviews_module_1 = require("./provider-reviews/provider-reviews.module");
 const providers_module_1 = require("./providers/providers.module");
 let AppModule = class AppModule {
     constructor(connection) {
@@ -23,9 +23,9 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     common_1.Module({
-        imports: [typeorm_1.TypeOrmModule.forRoot({ autoLoadEntities: true, }), providers_module_1.ProvidersModule],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        imports: [typeorm_1.TypeOrmModule.forRoot({ autoLoadEntities: true, }), providers_module_1.ProvidersModule, locations_module_1.LocationsModule, provider_reviews_module_1.ProviderReviewsModule],
+        controllers: [],
+        providers: [],
     }),
     __metadata("design:paramtypes", [typeorm_2.Connection])
 ], AppModule);

@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProviderDto = void 0;
 const class_validator_1 = require("class-validator");
+const location_entity_1 = require("../../locations/location.entity");
 class CreateProviderDto {
 }
 __decorate([
@@ -23,15 +24,31 @@ __decorate([
 ], CreateProviderDto.prototype, "fullName", void 0);
 __decorate([
     class_validator_1.IsString({ each: true }),
-    __metadata("design:type", Set)
+    __metadata("design:type", Array)
 ], CreateProviderDto.prototype, "otherNames", void 0);
 __decorate([
     class_validator_1.IsString({ each: true }),
-    __metadata("design:type", Set)
+    __metadata("design:type", Array)
+], CreateProviderDto.prototype, "titles", void 0);
+__decorate([
+    class_validator_1.IsString({ each: true }),
+    __metadata("design:type", Array)
 ], CreateProviderDto.prototype, "specialties", void 0);
 __decorate([
     class_validator_1.IsString({ each: true }),
-    __metadata("design:type", Set)
+    __metadata("design:type", Array)
 ], CreateProviderDto.prototype, "languages", void 0);
+__decorate([
+    class_validator_1.IsString({ each: true }),
+    __metadata("design:type", Array)
+], CreateProviderDto.prototype, "services", void 0);
+__decorate([
+    class_validator_1.IsBoolean(),
+    __metadata("design:type", Boolean)
+], CreateProviderDto.prototype, "remoteVisits", void 0);
+__decorate([
+    class_validator_1.IsBoolean(),
+    __metadata("design:type", Boolean)
+], CreateProviderDto.prototype, "slidingScalePay", void 0);
 exports.CreateProviderDto = CreateProviderDto;
 //# sourceMappingURL=create-provider.dto.js.map

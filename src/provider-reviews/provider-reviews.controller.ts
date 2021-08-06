@@ -7,6 +7,8 @@ import {
     Body,
     Param,
     HttpStatus,
+    Inject,
+    forwardRef,
     NotFoundException,
 } from '@nestjs/common';
 
@@ -20,12 +22,14 @@ import { ProviderReviewsEntity } from './provider-review.entity';
 
 @Controller('provider/reviews')
 export class ProviderReviewsController {
-    constructor(private providersService: ProvidersService, private providerReviewsService: ProviderReviewsService) { }
+    constructor(private providerReviewsService: ProviderReviewsService, @Inject(forwardRef(() => ProvidersService))
+    @Inject(forwardRef(() => ProvidersService))
+        private providersService: ProvidersService) { }
 
     @Get(':providerId')
     async showAllProviderReviews(@Param('providerId', new ParseIntPipe()) providerId: number) {
         const provider: ProvidersEntity = await this.providersService.showOne(providerId);
-        
+
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
@@ -47,7 +51,7 @@ export class ProviderReviewsController {
             throw new NotFoundException('Invalid provider id');
         }
         try {
-            data.provider = provider 
+            data.provider = provider
             validateOrReject(data)
             const review = await this.providerReviewsService.create(data);
             return {

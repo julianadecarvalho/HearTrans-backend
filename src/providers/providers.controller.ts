@@ -8,6 +8,8 @@ import {
     Param,
     HttpStatus,
     NotFoundException,
+    Inject,
+    forwardRef
 } from '@nestjs/common';
 
 import { ParseIntPipe } from '../common/parse-int.pipe';
@@ -19,7 +21,7 @@ import { LocationsService } from 'src/locations/locations.service';
 import { LocationsEntity } from 'src/locations/location.entity';
 @Controller('providers')
 export class ProvidersController {
-    constructor(private providersService: ProvidersService, private locationsService: LocationsService) { }
+    constructor(private providersService: ProvidersService, @Inject(forwardRef(() => LocationsService)) private locationsService: LocationsService) { }
 
     @Get()
     async showAllProviders() {
