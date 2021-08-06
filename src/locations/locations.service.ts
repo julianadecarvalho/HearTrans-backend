@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocationsEntity } from './location.entity';
@@ -9,7 +9,7 @@ import { CreateLocationDto } from './dto/create-location.dto';
 export class LocationsService {
     constructor(
         @InjectRepository(LocationsEntity)
-        private locationsRepository: Repository<LocationsEntity>,
+        private locationsRepository: Repository<LocationsEntity>
     ) { }
 
     async create(data: CreateLocationDto): Promise<LocationsEntity> {
