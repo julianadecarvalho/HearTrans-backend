@@ -9,13 +9,13 @@ export class LocationsEntity {
     @Column({ type: "text" })
     locationName: string;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "simple-array", default: [] })
     locationTypes: string[];
 
     @Column({ type: "text" })
     googleMapsUrl: string;
 
-    @Column({ type: "text" })
+    @Column({ type: "text", nullable: true })
     locationUrl: string;
 
     @Column({ type: "text" })

@@ -12,6 +12,9 @@ export class ProviderReviewsEntity {
     @Column({ type: "text" })
     reviewBody: string;
 
+    @Column({ type: "simple-array", default: [] })
+    contentWarnings: string[]
+
     @ManyToOne(() => ProvidersEntity, provider => provider.reviews)
     provider: ProvidersEntity;
 
