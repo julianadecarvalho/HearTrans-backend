@@ -1,6 +1,7 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Geometry, Point } from 'geojson';
+import { InjectRepository, } from '@nestjs/typeorm';
+import { Repository, LessThan, getConnection } from 'typeorm';
 import { LocationsEntity } from './location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
 
@@ -29,6 +30,25 @@ export class LocationsService {
 
     showOne(id: number): Promise<LocationsEntity> {
         return this.locationsRepository.findOne(id);
+    }
+
+    searchWithin(distance: number, lat: number, lon: number): Promise<LocationsEntity[]> {
+        let origin = {
+            type: "Point",
+            coordinates: [lon, lat]
+        };
+        let locations = this.locationsRepository
+            .createQueryBuilder('t_test_location')
+            .select(['t_test_location.city AS city', 'ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
+            .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
+            .orderBy("distance", "ASC")
+            .setParameters({
+                // stringify GeoJSON
+                origin: JSON.stringify(origin),
+                range: distance * 1.6 //miles to KM conversion
+            })
+            .getRawMany();
+        return locations;
     }
 
     async remove(id: number): Promise<void> {

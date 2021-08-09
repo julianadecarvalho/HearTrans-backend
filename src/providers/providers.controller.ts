@@ -25,11 +25,12 @@ export class ProvidersController {
 
     @Get()
     async showAllProviders() {
-        const providers = await this.providersService.showAll();
+        var providers = await this.providersService.showAll();
+        providers.forEach(element => element.asDict());
         return {
             statusCode: HttpStatus.OK,
             message: 'Providers fetched successfully',
-            providers
+            providers,
         };
     }
 
@@ -39,10 +40,11 @@ export class ProvidersController {
         try {
             validateOrReject(data)
             const provider = await this.providersService.create(data);
+            const providerDict = provider.asDict();
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Provider created successfully',
-                provider
+                providerDict,
             };
         } catch (errors) {
             return {
@@ -59,10 +61,11 @@ export class ProvidersController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
+        const providerDict = provider.asDict();
         return {
             statusCode: HttpStatus.OK,
             message: 'Provider fetched successfully',
-            provider,
+            providerDict,
         };
     }
 

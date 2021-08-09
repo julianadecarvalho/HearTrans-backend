@@ -15,9 +15,12 @@ import { LocationsService } from './locations.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { validateOrReject } from 'class-validator';
 import { LocationsEntity } from './location.entity';
-import { ProvidersEntity} from 'src/providers/provider.entity';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 import { ProvidersService } from 'src/providers/providers.service';
+import { RequestBodyLocationWithin } from './dto/request-location.dto';
 
+require('dotenv').config()
+const KEY = process.env.KEY;
 @Controller('locations')
 export class LocationsController {
     constructor(private locationsService: LocationsService, private providersService: ProvidersService) { }
@@ -34,7 +37,7 @@ export class LocationsController {
 
     @Post()
     // add call to google place id finder so we can use and make call to
-    // google place details api around here to create the location data
+    // add call to google place details api around here to create the location data
     // we should look into json parsing for this 
     async createLocation(@Body() data: CreateLocationDto) {
         try {
@@ -67,68 +70,89 @@ export class LocationsController {
         };
     }
 
-    @Patch(':id')
-    async uppdateLocation(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateLocationDto>) {
-        const location: LocationsEntity = await this.locationsService.showOne(id);
-        if (location === undefined) {
-            throw new NotFoundException('Invalid location id');
-        }
+    @Get('search/within')
+    async findLocationWithin(@Body() data: RequestBodyLocationWithin) {
+        var axios = require('axios');
+        const address = encodeURI(data.address);
+        var config = {
+            method: 'get',
+            url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address +'key=' + KEY,
+            headers: { }
+    };
 
-        try {
-            validateOrReject(data);
-            await this.locationsService.update(id, data);
-            return {
-                statusCode: HttpStatus.OK,
-                message: 'Location updated successfully',
-            };
-        } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
-        }
+    axios(config)
+            .then(function(response) {
+        console.log(JSON.stringify(response.data));
+    })
+            .catch(function(error) {
+        console.log(error);
+    });
+    //add call to the searchwithin function after parsing the json
+
+}
+
+@Patch(':id')
+async uppdateLocation(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateLocationDto>) {
+    const location: LocationsEntity = await this.locationsService.showOne(id);
+    if (location === undefined) {
+        throw new NotFoundException('Invalid location id');
     }
 
-    @Patch(':providerId/:locationId')
-    async addLocation(@Param('locationId', new ParseIntPipe()) locationId: number, @Param('providerId', new ParseIntPipe()) providerId: number,) {
-        const location: LocationsEntity = await this.locationsService.showOne(locationId);
-        if (location === undefined) {
-            throw new NotFoundException('Invalid location id');
-        }
-        const provider: ProvidersEntity = await this.providersService.showOne(providerId);
-        if (provider === undefined) {
-            throw new NotFoundException('Invalid provider id');
-        }
-        try {
-            provider.locations.push(location)
-            await this.locationsService.update(locationId, provider);
-            return {
-                statusCode: HttpStatus.OK,
-                message: 'Provider updated successfully',
-            };
-        } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
-        }
-    }
-
-
-    @Delete(':id')
-    async deleteLocation(@Param('id', new ParseIntPipe()) id: number) {
-        const location: LocationsEntity = await this.locationsService.showOne(id);
-        if (location === undefined) {
-            throw new NotFoundException('Invalid location id');
-        }
-
-        await this.locationsService.remove(id);
+    try {
+        validateOrReject(data);
+        await this.locationsService.update(id, data);
         return {
             statusCode: HttpStatus.OK,
-            message: 'Location deleted successfully',
+            message: 'Location updated successfully',
         };
-
+    } catch (errors) {
+        return {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'Caught promise rejection (validation failed).',
+            errors: errors
+        };
     }
+}
+
+@Patch(':locationId/:providerId')
+async addProvider(@Param('locationId', new ParseIntPipe()) locationId: number, @Param('providerId', new ParseIntPipe()) providerId: number,) {
+    const location: LocationsEntity = await this.locationsService.showOne(locationId);
+    if (location === undefined) {
+        throw new NotFoundException('Invalid location id');
+    }
+    const provider: ProvidersEntity = await this.providersService.showOne(providerId);
+    if (provider === undefined) {
+        throw new NotFoundException('Invalid provider id');
+    }
+    try {
+        location.providers.push(provider)
+        await this.locationsService.update(locationId, location);
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'Location updated successfully',
+        };
+    } catch (errors) {
+        return {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'Caught promise rejection (validation failed).',
+            errors: errors
+        };
+    }
+}
+
+
+@Delete(':id')
+async deleteLocation(@Param('id', new ParseIntPipe()) id: number) {
+    const location: LocationsEntity = await this.locationsService.showOne(id);
+    if (location === undefined) {
+        throw new NotFoundException('Invalid location id');
+    }
+
+    await this.locationsService.remove(id);
+    return {
+        statusCode: HttpStatus.OK,
+        message: 'Location deleted successfully',
+    };
+
+}
 }
