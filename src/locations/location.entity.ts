@@ -35,8 +35,8 @@ export class LocationsEntity {
 
     @Index({ spatial: true })
     @Column({
-        type: 'geography',
-        spatialFeatureType: 'Point',
+        type: "geography",
+        spatialFeatureType: "Point",
         srid: 4326,
         nullable: true,
     })

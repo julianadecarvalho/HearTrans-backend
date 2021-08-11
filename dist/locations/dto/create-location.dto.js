@@ -53,6 +53,6 @@ __decorate([
 __decorate([
     class_validator_1.IsString(),
     __metadata("design:type", String)
-], CreateLocationDto.prototype, "google_place_id", void 0);
+], CreateLocationDto.prototype, "googlePlaceId", void 0);
 exports.CreateLocationDto = CreateLocationDto;
 //# sourceMappingURL=create-location.dto.js.map

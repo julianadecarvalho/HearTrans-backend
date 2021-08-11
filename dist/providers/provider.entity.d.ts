@@ -23,7 +23,20 @@ export declare class ProvidersEntity {
         remoteVisits: boolean;
         slidingScalePay: boolean;
         reviews: ProviderReviewsEntity[];
-        locations: LocationsEntity[];
+        locations: void;
+        avgRating: string;
+    };
+    asDictNoLocations: () => {
+        id: number;
+        fullName: string;
+        otherNames: string[];
+        titles: string[];
+        specialties: string[];
+        languages: string[];
+        services: string[];
+        remoteVisits: boolean;
+        slidingScalePay: boolean;
+        reviews: ProviderReviewsEntity[];
         avgRating: string;
     };
 }

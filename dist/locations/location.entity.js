@@ -8,11 +8,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocationsEntity = void 0;
 const provider_entity_1 = require("../providers/provider.entity");
 const typeorm_1 = require("typeorm");
+const geojson_1 = require("geojson");
 let LocationsEntity = class LocationsEntity {
+    constructor() {
+        this.asDict = () => {
+            return {
+                id: this.id,
+                locationName: this.locationName,
+                locationTypes: this.locationTypes,
+                googleMapsUrl: this.googleMapsUrl,
+                locationUrl: this.locationUrl,
+                latitude: this.latitude,
+                longitude: this.longitude,
+                phone: this.phone,
+                address: this.address,
+                providers: this.providers.forEach(location => location.asDictNoLocations())
+            };
+        };
+        this.asDictNoProviders = () => {
+            return {
+                id: this.id,
+                locationName: this.locationName,
+                locationTypes: this.locationTypes,
+                googleMapsUrl: this.googleMapsUrl,
+                locationUrl: this.locationUrl,
+                latitude: this.latitude,
+                longitude: this.longitude,
+                phone: this.phone,
+                address: this.address,
+            };
+        };
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
@@ -53,7 +84,17 @@ __decorate([
 __decorate([
     typeorm_1.Column({ type: "text" }),
     __metadata("design:type", String)
-], LocationsEntity.prototype, "google_place_id", void 0);
+], LocationsEntity.prototype, "googlePlaceId", void 0);
+__decorate([
+    typeorm_1.Index({ spatial: true }),
+    typeorm_1.Column({
+        type: "geography",
+        spatialFeatureType: "Point",
+        srid: 4326,
+        nullable: true,
+    }),
+    __metadata("design:type", typeof (_a = typeof geojson_1.Point !== "undefined" && geojson_1.Point) === "function" ? _a : Object)
+], LocationsEntity.prototype, "locationPoint", void 0);
 __decorate([
     typeorm_1.ManyToMany(() => provider_entity_1.ProvidersEntity),
     typeorm_1.JoinTable(),

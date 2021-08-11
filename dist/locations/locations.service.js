@@ -22,6 +22,11 @@ let LocationsService = class LocationsService {
         this.locationsRepository = locationsRepository;
     }
     async create(data) {
+        const pointObject = {
+            type: "Point",
+            coordinates: [data.longitude, data.latitude]
+        };
+        data.locationPoint = pointObject;
         this.locationsRepository.create(data);
         const location = await this.locationsRepository.save(data);
         return location;
@@ -36,14 +41,14 @@ let LocationsService = class LocationsService {
     showOne(id) {
         return this.locationsRepository.findOne(id);
     }
-    searchWithin(distance, lat, lon) {
+    searchWithin(distance, lat, lon, text) {
         let origin = {
             type: "Point",
             coordinates: [lon, lat]
         };
         let locations = this.locationsRepository
             .createQueryBuilder('t_test_location')
-            .select(['t_test_location.city AS city', 'ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
+            .select(['ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
             .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
             .orderBy("distance", "ASC")
             .setParameters({

@@ -16,7 +16,6 @@ exports.LocationsController = void 0;
 const common_1 = require("@nestjs/common");
 const parse_int_pipe_1 = require("../common/parse-int.pipe");
 const locations_service_1 = require("./locations.service");
-const create_location_dto_1 = require("./dto/create-location.dto");
 const class_validator_1 = require("class-validator");
 const provider_entity_1 = require("../providers/provider.entity");
 const providers_service_1 = require("../providers/providers.service");
@@ -36,23 +35,60 @@ let LocationsController = class LocationsController {
             locations
         };
     }
-    async createLocation(data) {
-        try {
-            class_validator_1.validateOrReject(data);
-            const location = await this.locationsService.create(data);
-            return {
-                statusCode: common_1.HttpStatus.OK,
-                message: 'Location created successfully',
-                location
+    async createLocation(text) {
+        var axios = require('axios');
+        var config = {
+            method: 'get',
+            url: 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=' + text + '&inputtype=textquery&fields=place_id,formatted_address,name,geometry&key=' + KEY,
+            headers: {}
+        };
+        axios(config)
+            .then(async function (response) {
+            const parsedJson = (JSON.parse(response.data)).candidates[0];
+            const data = {
+                locationName: parsedJson.name,
+                locationTypes: parsedJson.types,
+                latitude: parsedJson.geometry.location.lat,
+                longitude: parsedJson.geometry.location.lng,
+                address: parsedJson.formatted_address,
+                googlePlaceId: parsedJson.place_id,
             };
-        }
-        catch (errors) {
+            const config2 = {
+                method: 'get',
+                url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + data.googlePlaceId + '&inputtype=textquery&fields=formatted_phone_number,url,website&key=' + KEY,
+                headers: {}
+            };
+            axios(config2)
+                .then(async function (response2) {
+                const parsedJson2 = (JSON.parse(response.data)).result;
+                data['phone'] = parsedJson2.formatted_phone_number;
+                data['locationUrl'] = parsedJson2.website;
+                data['googleMapsUrl'] = parsedJson2.url;
+                try {
+                    class_validator_1.validateOrReject(data);
+                    const location = await this.locationsService.create(data);
+                    return {
+                        statusCode: common_1.HttpStatus.OK,
+                        message: 'Location created successfully',
+                        location
+                    };
+                }
+                catch (errors) {
+                    return {
+                        statusCode: common_1.HttpStatus.BAD_REQUEST,
+                        message: 'Caught promise rejection (validation failed).',
+                        errors: errors
+                    };
+                }
+            });
+        })
+            .catch(function (error) {
             return {
                 statusCode: common_1.HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
+                message: 'ERROR.',
+                errors: error
             };
-        }
+        });
     }
     async readLocation(id) {
         const location = await this.locationsService.showOne(id);
@@ -75,13 +111,14 @@ let LocationsController = class LocationsController {
         };
         axios(config)
             .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            const parsedJson = (JSON.parse(response.data));
+            const lat = parsedJson;
         })
             .catch(function (error) {
             console.log(error);
         });
     }
-    async uppdateLocation(id, data) {
+    async updateLocation(id, data) {
         const location = await this.locationsService.showOne(id);
         if (location === undefined) {
             throw new common_1.NotFoundException('Invalid location id');
@@ -146,10 +183,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LocationsController.prototype, "showAllLocations", null);
 __decorate([
-    common_1.Post(),
-    __param(0, common_1.Body()),
+    common_1.Post(':address'),
+    __param(0, common_1.Param('address')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_location_dto_1.CreateLocationDto]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], LocationsController.prototype, "createLocation", null);
 __decorate([
@@ -173,7 +210,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
-], LocationsController.prototype, "uppdateLocation", null);
+], LocationsController.prototype, "updateLocation", null);
 __decorate([
     common_1.Patch(':locationId/:providerId'),
     __param(0, common_1.Param('locationId', new parse_int_pipe_1.ParseIntPipe())),

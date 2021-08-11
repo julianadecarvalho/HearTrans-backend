@@ -3,7 +3,6 @@ import { ProvidersService } from './providers.service';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { ProvidersEntity } from './provider.entity';
 import { LocationsService } from 'src/locations/locations.service';
-import { LocationsEntity } from 'src/locations/location.entity';
 export declare class ProvidersController {
     private providersService;
     private locationsService;
@@ -27,7 +26,7 @@ export declare class ProvidersController {
             remoteVisits: boolean;
             slidingScalePay: boolean;
             reviews: import("../provider-reviews/provider-review.entity").ProviderReviewsEntity[];
-            locations: LocationsEntity[];
+            locations: void;
             avgRating: string;
         };
         errors?: undefined;
@@ -51,7 +50,7 @@ export declare class ProvidersController {
             remoteVisits: boolean;
             slidingScalePay: boolean;
             reviews: import("../provider-reviews/provider-review.entity").ProviderReviewsEntity[];
-            locations: LocationsEntity[];
+            locations: void;
             avgRating: string;
         };
     }>;

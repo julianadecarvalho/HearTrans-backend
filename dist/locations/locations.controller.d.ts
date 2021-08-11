@@ -13,24 +13,14 @@ export declare class LocationsController {
         message: string;
         locations: LocationsEntity[];
     }>;
-    createLocation(data: CreateLocationDto): Promise<{
-        statusCode: HttpStatus;
-        message: string;
-        location: LocationsEntity;
-        errors?: undefined;
-    } | {
-        statusCode: HttpStatus;
-        message: string;
-        errors: any;
-        location?: undefined;
-    }>;
+    createLocation(text: string): Promise<void>;
     readLocation(id: number): Promise<{
         statusCode: HttpStatus;
         message: string;
         location: LocationsEntity;
     }>;
     findLocationWithin(data: RequestBodyLocationWithin): Promise<void>;
-    uppdateLocation(id: number, data: Partial<CreateLocationDto>): Promise<{
+    updateLocation(id: number, data: Partial<CreateLocationDto>): Promise<{
         statusCode: HttpStatus;
         message: string;
         errors?: undefined;
