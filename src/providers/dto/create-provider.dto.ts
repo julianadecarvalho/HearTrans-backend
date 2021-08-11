@@ -9,19 +9,19 @@ export class CreateProviderDto {
     readonly fullName: string;
 
     @IsString({ each: true })
-    readonly otherNames: string[];
+    readonly otherNames?: string[];
 
     @IsString({ each: true }) //MD, NP, etc?
-    readonly titles: string[];
+    readonly titles?: string[];
 
     @IsString({ each: true })
-    readonly specialties: string[];
+    readonly specialties?: string[];
 
     @IsString({ each: true }) //should we add a dropdown selector in form?
-    readonly languages: string[];
+    readonly languages?: string[];
 
     @IsString({ each: true }) //STI, HIV care, primary, therapy, etc
-    readonly services: string[];
+    readonly services?: string[];
 
     @IsBoolean()
     readonly remoteVisits?: boolean;

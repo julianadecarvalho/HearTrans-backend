@@ -1,6 +1,6 @@
 import { ProvidersEntity } from 'src/providers/provider.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Index } from 'typeorm';
+import { Geometry, Point } from 'geojson';
 @Entity()
 export class LocationsEntity {
     @PrimaryGeneratedColumn()
@@ -31,7 +31,16 @@ export class LocationsEntity {
     address: string;
 
     @Column({ type: "text" })
-    google_place_id: string;
+    googlePlaceId: string;
+
+    @Index({ spatial: true })
+    @Column({
+        type: 'geography',
+        spatialFeatureType: 'Point',
+        srid: 4326,
+        nullable: true,
+    })
+    locationPoint: Point
 
     @ManyToMany(() => ProvidersEntity)
     @JoinTable()

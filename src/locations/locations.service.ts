@@ -14,6 +14,14 @@ export class LocationsService {
     ) { }
 
     async create(data: CreateLocationDto): Promise<LocationsEntity> {
+
+        const pointObject: Point = {
+            type: "Point",
+            coordinates: [data.longitude, data.latitude]
+        };
+        data.locationPoint = pointObject;
+
+
         this.locationsRepository.create(data);
         const location = await this.locationsRepository.save(data);
         return location;
@@ -32,14 +40,14 @@ export class LocationsService {
         return this.locationsRepository.findOne(id);
     }
 
-    searchWithin(distance: number, lat: number, lon: number): Promise<LocationsEntity[]> {
+    searchWithin(distance: number, lat: number, lon: number, text: string): Promise<LocationsEntity[]> {
         let origin = {
             type: "Point",
             coordinates: [lon, lat]
         };
         let locations = this.locationsRepository
             .createQueryBuilder('t_test_location')
-            .select(['t_test_location.city AS city', 'ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
+            .select(['ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
             .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
             .orderBy("distance", "ASC")
             .setParameters({
