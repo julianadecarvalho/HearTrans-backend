@@ -3,6 +3,7 @@ import { LocationsService } from './locations.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationsEntity } from './location.entity';
 import { ProvidersService } from 'src/providers/providers.service';
+import { RequestBodyLocationWithin } from './dto/request-location.dto';
 export declare class LocationsController {
     private locationsService;
     private providersService;
@@ -28,6 +29,7 @@ export declare class LocationsController {
         message: string;
         location: LocationsEntity;
     }>;
+    findLocationWithin(data: RequestBodyLocationWithin): Promise<void>;
     uppdateLocation(id: number, data: Partial<CreateLocationDto>): Promise<{
         statusCode: HttpStatus;
         message: string;
@@ -37,7 +39,7 @@ export declare class LocationsController {
         message: string;
         errors: any;
     }>;
-    addLocation(locationId: number, providerId: number): Promise<{
+    addProvider(locationId: number, providerId: number): Promise<{
         statusCode: HttpStatus;
         message: string;
         errors?: undefined;

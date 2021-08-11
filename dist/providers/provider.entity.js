@@ -14,6 +14,25 @@ const provider_review_entity_1 = require("../provider-reviews/provider-review.en
 const location_entity_1 = require("../locations/location.entity");
 const typeorm_1 = require("typeorm");
 let ProvidersEntity = class ProvidersEntity {
+    constructor() {
+        this.asDict = () => {
+            return {
+                id: this.id,
+                fullName: this.fullName,
+                otherNames: this.otherNames,
+                titles: this.titles,
+                specialties: this.specialties,
+                languages: this.languages,
+                services: this.services,
+                remoteVisits: this.remoteVisits,
+                slidingScalePay: this.slidingScalePay,
+                reviews: this.reviews,
+                locations: this.locations,
+                avgRating: (this.reviews.reduce((accumulator, currentReview) => accumulator + currentReview.rating, 0)
+                    / this.reviews.length).toFixed(1)
+            };
+        };
+    }
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn({ type: "integer" }),
@@ -24,23 +43,23 @@ __decorate([
     __metadata("design:type", String)
 ], ProvidersEntity.prototype, "fullName", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], ProvidersEntity.prototype, "otherNames", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], ProvidersEntity.prototype, "titles", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], ProvidersEntity.prototype, "specialties", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], ProvidersEntity.prototype, "languages", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], ProvidersEntity.prototype, "services", void 0);
 __decorate([

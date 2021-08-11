@@ -26,21 +26,23 @@ let ProvidersController = class ProvidersController {
         this.locationsService = locationsService;
     }
     async showAllProviders() {
-        const providers = await this.providersService.showAll();
+        var providers = await this.providersService.showAll();
+        providers.forEach(element => element.asDict());
         return {
             statusCode: common_1.HttpStatus.OK,
             message: 'Providers fetched successfully',
-            providers
+            providers,
         };
     }
     async createProvider(data) {
         try {
             class_validator_1.validateOrReject(data);
             const provider = await this.providersService.create(data);
+            const providerDict = provider.asDict();
             return {
                 statusCode: common_1.HttpStatus.OK,
                 message: 'Provider created successfully',
-                provider
+                providerDict,
             };
         }
         catch (errors) {
@@ -56,10 +58,11 @@ let ProvidersController = class ProvidersController {
         if (provider === undefined) {
             throw new common_1.NotFoundException('Invalid provider id');
         }
+        const providerDict = provider.asDict();
         return {
             statusCode: common_1.HttpStatus.OK,
             message: 'Provider fetched successfully',
-            provider,
+            providerDict,
         };
     }
     async uppdateProvider(id, data) {

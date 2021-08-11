@@ -3,6 +3,7 @@ import { ProvidersService } from './providers.service';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { ProvidersEntity } from './provider.entity';
 import { LocationsService } from 'src/locations/locations.service';
+import { LocationsEntity } from 'src/locations/location.entity';
 export declare class ProvidersController {
     private providersService;
     private locationsService;
@@ -15,18 +16,44 @@ export declare class ProvidersController {
     createProvider(data: CreateProviderDto): Promise<{
         statusCode: HttpStatus;
         message: string;
-        provider: ProvidersEntity;
+        providerDict: {
+            id: number;
+            fullName: string;
+            otherNames: string[];
+            titles: string[];
+            specialties: string[];
+            languages: string[];
+            services: string[];
+            remoteVisits: boolean;
+            slidingScalePay: boolean;
+            reviews: import("../provider-reviews/provider-review.entity").ProviderReviewsEntity[];
+            locations: LocationsEntity[];
+            avgRating: string;
+        };
         errors?: undefined;
     } | {
         statusCode: HttpStatus;
         message: string;
         errors: any;
-        provider?: undefined;
+        providerDict?: undefined;
     }>;
     readProvider(id: number): Promise<{
         statusCode: HttpStatus;
         message: string;
-        provider: ProvidersEntity;
+        providerDict: {
+            id: number;
+            fullName: string;
+            otherNames: string[];
+            titles: string[];
+            specialties: string[];
+            languages: string[];
+            services: string[];
+            remoteVisits: boolean;
+            slidingScalePay: boolean;
+            reviews: import("../provider-reviews/provider-review.entity").ProviderReviewsEntity[];
+            locations: LocationsEntity[];
+            avgRating: string;
+        };
     }>;
     uppdateProvider(id: number, data: Partial<CreateProviderDto>): Promise<{
         statusCode: HttpStatus;

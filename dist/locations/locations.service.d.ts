@@ -8,5 +8,6 @@ export declare class LocationsService {
     update(id: number, data: Partial<CreateLocationDto>): Promise<LocationsEntity>;
     showAll(): Promise<LocationsEntity[]>;
     showOne(id: number): Promise<LocationsEntity>;
+    searchWithin(distance: number, lat: number, lon: number): Promise<LocationsEntity[]>;
     remove(id: number): Promise<void>;
 }

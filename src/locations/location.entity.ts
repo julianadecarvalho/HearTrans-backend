@@ -37,4 +37,32 @@ export class LocationsEntity {
     @JoinTable()
     providers: ProvidersEntity[];
 
+    asDict = () => {
+        return {
+            id: this.id,
+            locationName: this.locationName,
+            locationTypes: this.locationTypes,
+            googleMapsUrl: this.googleMapsUrl,
+            locationUrl: this.locationUrl,
+            latitude: this.latitude,
+            longitude: this.longitude,
+            phone: this.phone,
+            address: this.address,
+            providers: this.providers.forEach(location => location.asDictNoLocations())
+        }
+    }
+
+    asDictNoProviders = () => {
+        return {
+            id: this.id,
+            locationName: this.locationName,
+            locationTypes: this.locationTypes,
+            googleMapsUrl: this.googleMapsUrl,
+            locationUrl: this.locationUrl,
+            latitude: this.latitude,
+            longitude: this.longitude,
+            phone: this.phone,
+            address: this.address,
+        }
+    }
 }

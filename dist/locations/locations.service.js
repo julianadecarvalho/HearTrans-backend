@@ -36,6 +36,23 @@ let LocationsService = class LocationsService {
     showOne(id) {
         return this.locationsRepository.findOne(id);
     }
+    searchWithin(distance, lat, lon) {
+        let origin = {
+            type: "Point",
+            coordinates: [lon, lat]
+        };
+        let locations = this.locationsRepository
+            .createQueryBuilder('t_test_location')
+            .select(['t_test_location.city AS city', 'ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
+            .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
+            .orderBy("distance", "ASC")
+            .setParameters({
+            origin: JSON.stringify(origin),
+            range: distance * 1.6
+        })
+            .getRawMany();
+        return locations;
+    }
     async remove(id) {
         await this.locationsRepository.delete(id);
     }

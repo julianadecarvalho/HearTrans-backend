@@ -50,7 +50,25 @@ export class ProvidersEntity {
             remoteVisits: this.remoteVisits,
             slidingScalePay: this.slidingScalePay,
             reviews: this.reviews,
-            locations: this.locations,
+            locations: this.locations.forEach(location => location.asDictNoProviders()),
+            avgRating: (
+                this.reviews.reduce((accumulator, currentReview) => accumulator + currentReview.rating, 0)
+                / this.reviews.length).toFixed(1)
+        }
+    }
+
+    asDictNoLocations = () => {
+        return {
+            id: this.id,
+            fullName: this.fullName,
+            otherNames: this.otherNames,
+            titles: this.titles,
+            specialties: this.specialties,
+            languages: this.languages,
+            services: this.services,
+            remoteVisits: this.remoteVisits,
+            slidingScalePay: this.slidingScalePay,
+            reviews: this.reviews,
             avgRating: (
                 this.reviews.reduce((accumulator, currentReview) => accumulator + currentReview.rating, 0)
                 / this.reviews.length).toFixed(1)

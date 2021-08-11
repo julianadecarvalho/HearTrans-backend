@@ -18,6 +18,7 @@ import { LocationsEntity } from './location.entity';
 import { ProvidersEntity } from 'src/providers/provider.entity';
 import { ProvidersService } from 'src/providers/providers.service';
 import { RequestBodyLocationWithin } from './dto/request-location.dto';
+import { parse } from 'path/posix';
 
 require('dotenv').config()
 const KEY = process.env.KEY;
@@ -82,7 +83,8 @@ export class LocationsController {
 
     axios(config)
             .then(function(response) {
-        console.log(JSON.stringify(response.data));
+        const parsedJson = (JSON.parse(response.data));
+        const lat = parsedJson;
     })
             .catch(function(error) {
         console.log(error);
@@ -92,7 +94,7 @@ export class LocationsController {
 }
 
 @Patch(':id')
-async uppdateLocation(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateLocationDto>) {
+async updateLocation(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateLocationDto>) {
     const location: LocationsEntity = await this.locationsService.showOne(id);
     if (location === undefined) {
         throw new NotFoundException('Invalid location id');

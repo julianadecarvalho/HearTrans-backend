@@ -27,6 +27,10 @@ __decorate([
     __metadata("design:type", String)
 ], ProviderReviewsEntity.prototype, "reviewBody", void 0);
 __decorate([
+    typeorm_1.Column({ type: "simple-array", default: [] }),
+    __metadata("design:type", Array)
+], ProviderReviewsEntity.prototype, "contentWarnings", void 0);
+__decorate([
     typeorm_1.ManyToOne(() => provider_entity_1.ProvidersEntity, provider => provider.reviews),
     __metadata("design:type", provider_entity_1.ProvidersEntity)
 ], ProviderReviewsEntity.prototype, "provider", void 0);

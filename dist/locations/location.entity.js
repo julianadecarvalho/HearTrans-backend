@@ -23,7 +23,7 @@ __decorate([
     __metadata("design:type", String)
 ], LocationsEntity.prototype, "locationName", void 0);
 __decorate([
-    typeorm_1.Column({ type: "simple-array" }),
+    typeorm_1.Column({ type: "simple-array", default: [] }),
     __metadata("design:type", Array)
 ], LocationsEntity.prototype, "locationTypes", void 0);
 __decorate([
@@ -31,7 +31,7 @@ __decorate([
     __metadata("design:type", String)
 ], LocationsEntity.prototype, "googleMapsUrl", void 0);
 __decorate([
-    typeorm_1.Column({ type: "text" }),
+    typeorm_1.Column({ type: "text", nullable: true }),
     __metadata("design:type", String)
 ], LocationsEntity.prototype, "locationUrl", void 0);
 __decorate([

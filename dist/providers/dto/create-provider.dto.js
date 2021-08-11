@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProviderDto = void 0;
 const class_validator_1 = require("class-validator");
 const location_entity_1 = require("../../locations/location.entity");
+const provider_review_entity_1 = require("../../provider-reviews/provider-review.entity");
 class CreateProviderDto {
 }
 __decorate([

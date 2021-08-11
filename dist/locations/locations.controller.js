@@ -20,6 +20,9 @@ const create_location_dto_1 = require("./dto/create-location.dto");
 const class_validator_1 = require("class-validator");
 const provider_entity_1 = require("../providers/provider.entity");
 const providers_service_1 = require("../providers/providers.service");
+const request_location_dto_1 = require("./dto/request-location.dto");
+require('dotenv').config();
+const KEY = process.env.KEY;
 let LocationsController = class LocationsController {
     constructor(locationsService, providersService) {
         this.locationsService = locationsService;
@@ -62,6 +65,22 @@ let LocationsController = class LocationsController {
             location,
         };
     }
+    async findLocationWithin(data) {
+        var axios = require('axios');
+        const address = encodeURI(data.address);
+        var config = {
+            method: 'get',
+            url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + 'key=' + KEY,
+            headers: {}
+        };
+        axios(config)
+            .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
+    }
     async uppdateLocation(id, data) {
         const location = await this.locationsService.showOne(id);
         if (location === undefined) {
@@ -83,7 +102,7 @@ let LocationsController = class LocationsController {
             };
         }
     }
-    async addLocation(locationId, providerId) {
+    async addProvider(locationId, providerId) {
         const location = await this.locationsService.showOne(locationId);
         if (location === undefined) {
             throw new common_1.NotFoundException('Invalid location id');
@@ -93,11 +112,11 @@ let LocationsController = class LocationsController {
             throw new common_1.NotFoundException('Invalid provider id');
         }
         try {
-            provider.locations.push(location);
-            await this.locationsService.update(locationId, provider);
+            location.providers.push(provider);
+            await this.locationsService.update(locationId, location);
             return {
                 statusCode: common_1.HttpStatus.OK,
-                message: 'Provider updated successfully',
+                message: 'Location updated successfully',
             };
         }
         catch (errors) {
@@ -141,6 +160,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LocationsController.prototype, "readLocation", null);
 __decorate([
+    common_1.Get('search/within'),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [request_location_dto_1.RequestBodyLocationWithin]),
+    __metadata("design:returntype", Promise)
+], LocationsController.prototype, "findLocationWithin", null);
+__decorate([
     common_1.Patch(':id'),
     __param(0, common_1.Param('id', new parse_int_pipe_1.ParseIntPipe())),
     __param(1, common_1.Body()),
@@ -149,13 +175,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LocationsController.prototype, "uppdateLocation", null);
 __decorate([
-    common_1.Patch(':providerId/:locationId'),
+    common_1.Patch(':locationId/:providerId'),
     __param(0, common_1.Param('locationId', new parse_int_pipe_1.ParseIntPipe())),
     __param(1, common_1.Param('providerId', new parse_int_pipe_1.ParseIntPipe())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
-], LocationsController.prototype, "addLocation", null);
+], LocationsController.prototype, "addProvider", null);
 __decorate([
     common_1.Delete(':id'),
     __param(0, common_1.Param('id', new parse_int_pipe_1.ParseIntPipe())),
