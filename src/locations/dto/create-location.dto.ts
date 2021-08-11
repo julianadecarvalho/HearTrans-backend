@@ -1,10 +1,10 @@
 import { IsInt, IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
 import { ProvidersEntity } from 'src/providers/provider.entity';
-
+import { Point } from 'geojson';
 export class CreateLocationDto {
     @IsInt()
     readonly id?: number;
-    
+
     @IsString()
     readonly locationName: string;
 
@@ -12,26 +12,27 @@ export class CreateLocationDto {
     readonly locationTypes: string[];
 
     @IsString()
-    readonly googleMapsUrl: string;
+    googleMapsUrl: string;
 
     @IsString()
-    readonly locationUrl?: string;
+    locationUrl: string;
 
     @IsLatitude()
     readonly latitude: string;
 
     @IsLongitude()
     readonly longitude: string;
-    
+
     @IsPhoneNumber('US')
-    readonly phone: string;
+    phone: string;
 
     @IsString()
     readonly address: string;
-    
+
     @IsString()
-    readonly google_place_id: string;
+    readonly googlePlaceId: string;
 
     providers?: ProvidersEntity[];
 
+    locationPoint?: Point;
 }
