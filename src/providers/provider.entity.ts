@@ -1,6 +1,10 @@
 import { ProviderReviewsEntity } from 'src/provider-reviews/provider-review.entity';
 import { LocationsEntity } from 'src/locations/location.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { CreateProviderDto } from './dto/create-provider.dto';
+import { ProviderResponse } from './dto/provider-response.dto';
+import { ReviewResponse } from 'src/provider-reviews/dto/review-response.dto';
+import { LocationResponse } from 'src/locations/dto/location-response.dto';
 
 @Entity()
 export class ProvidersEntity {
@@ -34,11 +38,13 @@ export class ProvidersEntity {
     @OneToMany(() => ProviderReviewsEntity, review => review.provider)
     reviews: ProviderReviewsEntity[];
 
-    @ManyToMany(() => LocationsEntity)
+    @ManyToMany(() => LocationsEntity, location => location.providers, { cascade: true })
     @JoinTable()
     locations: LocationsEntity[];
 
-    asDict = () => {
+
+    avgRating?: string
+    provAsDict(): ProviderResponse {
         return {
             id: this.id,
             fullName: this.fullName,
@@ -49,15 +55,15 @@ export class ProvidersEntity {
             services: this.services,
             remoteVisits: this.remoteVisits,
             slidingScalePay: this.slidingScalePay,
-            reviews: this.reviews,
-            locations: this.locations.forEach(location => location.asDictNoProviders()),
-            avgRating: (
+            locations: this.locations ? this.locations.map(function (location: LocationsEntity): LocationResponse { return location.locAsDictNoProviders() }) : [],
+            reviews: this.reviews ? this.reviews.map(function (review: ProviderReviewsEntity): ReviewResponse { return review.revAsDict() }) : [],
+            avgRating: this.reviews ? (
                 this.reviews.reduce((accumulator, currentReview) => accumulator + currentReview.rating, 0)
-                / this.reviews.length).toFixed(1)
+                / this.reviews.length).toFixed(1) : null
         }
     }
 
-    asDictNoLocations = () => {
+    provAsDictNoLocations(): ProviderResponse {
         return {
             id: this.id,
             fullName: this.fullName,
@@ -68,10 +74,10 @@ export class ProvidersEntity {
             services: this.services,
             remoteVisits: this.remoteVisits,
             slidingScalePay: this.slidingScalePay,
-            reviews: this.reviews,
-            avgRating: (
+            reviews: this.reviews ? this.reviews.map(function (review: ProviderReviewsEntity): ReviewResponse { return review.revAsDict() }) : [],
+            avgRating: this.reviews ? (
                 this.reviews.reduce((accumulator, currentReview) => accumulator + currentReview.rating, 0)
-                / this.reviews.length).toFixed(1)
+                / this.reviews.length).toFixed(1) : null
         }
     }
 }

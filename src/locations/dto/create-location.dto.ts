@@ -1,8 +1,7 @@
-import { IsInt, IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
+import { IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
 import { ProvidersEntity } from 'src/providers/provider.entity';
-import { Point, Geography } from 'geojson';
+import { Point } from 'geojson';
 export class CreateLocationDto {
-    @IsInt()
     readonly id?: number;
 
     @IsString()

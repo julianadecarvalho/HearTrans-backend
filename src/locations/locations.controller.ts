@@ -36,11 +36,11 @@ export class LocationsController {
         };
     }
 
-    @Post(':address')
+    @Post('new/:text')
     // add call to google place id finder so we can use and make call to
     // add call to google place details api around here to create the location data
     // we should look into json parsing for this 
-    async createLocation(@Param('address') text: string) {
+    async createLocation(@Param('text') text: string) {
 
         var axios = require('axios');
         var config = {
@@ -60,16 +60,16 @@ export class LocationsController {
                     address: parsedJson.formatted_address,
                     googlePlaceId: parsedJson.place_id,
                 };
-
+                console.log("1");
                 const config2 = {
                     method: 'get',
                     url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + data.googlePlaceId + '&inputtype=textquery&fields=formatted_phone_number,url,website&key=' + KEY,
                     headers: {}
                 };
-
+                
                 axios(config2)
                     .then(async function (response2) {
-                        const parsedJson2 = (JSON.parse(response.data)).result;
+                        const parsedJson2 = (JSON.parse(response2.data)).result;
                         data['phone'] = parsedJson2.formatted_phone_number;
                         data['locationUrl'] = parsedJson2.website;
                         data['googleMapsUrl'] = parsedJson2.url;

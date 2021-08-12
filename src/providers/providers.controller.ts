@@ -8,6 +8,7 @@ import {
     Param,
     HttpStatus,
     NotFoundException,
+    BadRequestException,
     Inject,
     forwardRef
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { ProvidersService } from './providers.service';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { validateOrReject } from 'class-validator';
 import { ProvidersEntity } from './provider.entity';
+import { ProviderResponse } from './dto/provider-response.dto';
 import { LocationsService } from 'src/locations/locations.service';
 import { LocationsEntity } from 'src/locations/location.entity';
 @Controller('providers')
@@ -25,12 +27,13 @@ export class ProvidersController {
 
     @Get()
     async showAllProviders() {
-        var providers = await this.providersService.showAll();
-        providers.forEach(element => element.asDict());
+        var providers: ProvidersEntity[] = await this.providersService.showAll();
+        console.log(providers[0])
+        var providersResponses: ProviderResponse[] = providers.map(function (provider: ProvidersEntity): ProviderResponse { return provider.provAsDict() });
         return {
             statusCode: HttpStatus.OK,
             message: 'Providers fetched successfully',
-            providers,
+            providersResponses,
         };
     }
 
@@ -38,20 +41,16 @@ export class ProvidersController {
     // add api call to google here to populate the data
     async createProvider(@Body() data: CreateProviderDto) {
         try {
-            validateOrReject(data)
+            validateOrReject(data);
             const provider = await this.providersService.create(data);
-            const providerDict = provider.asDict();
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Provider created successfully',
-                providerDict,
+                provider,
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            console.log(errors);
+            throw new BadRequestException;
         }
     }
 
@@ -61,7 +60,7 @@ export class ProvidersController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
-        const providerDict = provider.asDict();
+        const providerDict = provider.provAsDict();
         return {
             statusCode: HttpStatus.OK,
             message: 'Provider fetched successfully',
@@ -71,11 +70,6 @@ export class ProvidersController {
 
     @Patch(':id')
     async uppdateProvider(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateProviderDto>) {
-        const provider: ProvidersEntity = await this.providersService.showOne(id);
-        if (provider === undefined) {
-            throw new NotFoundException('Invalid provider id');
-        }
-
         try {
             validateOrReject(data);
             await this.providersService.update(id, data);
@@ -84,6 +78,7 @@ export class ProvidersController {
                 message: 'Provider updated successfully',
             };
         } catch (errors) {
+            console.log(errors);
             return {
                 statusCode: HttpStatus.BAD_REQUEST,
                 message: 'Caught promise rejection (validation failed).',
@@ -103,8 +98,9 @@ export class ProvidersController {
             throw new NotFoundException('Invalid provider id');
         }
         try {
-            provider.locations.push(location)
-            await this.locationsService.update(locationId, provider);
+            var data: Partial<CreateProviderDto> = {};
+            data["locations"] = [...provider.locations, location]
+            await this.locationsService.update(locationId, data);
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Provider updated successfully',

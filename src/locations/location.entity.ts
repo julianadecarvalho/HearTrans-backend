@@ -1,6 +1,8 @@
 import { ProvidersEntity } from 'src/providers/provider.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Index } from 'typeorm';
 import { Geometry, Point } from 'geojson';
+import { LocationResponse } from './dto/location-response.dto';
+import { ProviderReviewsService } from 'src/provider-reviews/provider-reviews.service';
 @Entity()
 export class LocationsEntity {
     @PrimaryGeneratedColumn()
@@ -42,36 +44,40 @@ export class LocationsEntity {
     })
     locationPoint: Point
 
-    @ManyToMany(() => ProvidersEntity)
+    @ManyToMany(() => ProvidersEntity, provider => provider.locations)
     @JoinTable()
     providers: ProvidersEntity[];
 
-    asDict = () => {
+    locAsDict(): LocationResponse {
         return {
             id: this.id,
             locationName: this.locationName,
             locationTypes: this.locationTypes,
             googleMapsUrl: this.googleMapsUrl,
+            googlePlaceId: this.googlePlaceId,
             locationUrl: this.locationUrl,
             latitude: this.latitude,
             longitude: this.longitude,
             phone: this.phone,
             address: this.address,
-            providers: this.providers.forEach(location => location.asDictNoLocations())
+            locationPoint: this.locationPoint,
+            providers: this.providers ? this.providers.map(provider => provider.provAsDictNoLocations()) : []
         }
     }
 
-    asDictNoProviders = () => {
+    locAsDictNoProviders(): LocationResponse {
         return {
             id: this.id,
             locationName: this.locationName,
             locationTypes: this.locationTypes,
             googleMapsUrl: this.googleMapsUrl,
+            googlePlaceId: this.googlePlaceId,
             locationUrl: this.locationUrl,
             latitude: this.latitude,
             longitude: this.longitude,
             phone: this.phone,
             address: this.address,
+            locationPoint: this.locationPoint,
         }
     }
 }

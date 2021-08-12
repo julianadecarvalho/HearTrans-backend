@@ -1,5 +1,6 @@
 import { ProvidersEntity } from 'src/providers/provider.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ReviewResponse } from './dto/review-response.dto';
 
 @Entity()
 export class ProviderReviewsEntity {
@@ -18,4 +19,12 @@ export class ProviderReviewsEntity {
     @ManyToOne(() => ProvidersEntity, provider => provider.reviews)
     provider: ProvidersEntity;
 
+    revAsDict(): ReviewResponse {
+        return {
+            id: this.id,
+            rating: this.rating,
+            reviewBody: this.reviewBody,
+            contentWarnings: this.contentWarnings
+        }
+    }
 }

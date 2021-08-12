@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProvidersEntity } from './provider.entity';
@@ -13,13 +13,26 @@ export class ProvidersService {
     ) { }
 
     async create(data: CreateProviderDto): Promise<ProvidersEntity> {
+        data.reviews = [];
+        data.locations = [];
         this.providersRepository.create(data);
         const provider = await this.providersRepository.save(data);
         return provider;
     }
 
-    update(id: number, data: Partial<CreateProviderDto>): Promise<ProvidersEntity> {
-        this.providersRepository.update({ id }, data);
+    async update(id: number, data: Partial<CreateProviderDto>): Promise<ProvidersEntity> {
+        var provider = await this.showOne(id)
+        if (provider === undefined) {
+            throw new NotFoundException('Invalid provider id');
+        }
+        //I guess I'll hard code this with ternaries
+        for (const [key, value] of Object.entries(data)) {
+            console.log(key, value);
+            provider[key] = value;
+            console.log(provider[key]);
+        }
+        console.log(provider);
+        this.providersRepository.save(provider);
         return this.providersRepository.findOne({ id });
     }
 
