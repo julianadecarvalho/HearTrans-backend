@@ -8,6 +8,7 @@ import {
     Param,
     HttpStatus,
     NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 
 import { ParseIntPipe } from '../common/parse-int.pipe';
@@ -45,14 +46,16 @@ export class LocationsController {
         var axios = require('axios');
         var config = {
             method: 'get',
-            url: 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=' + text + '&inputtype=textquery&fields=place_id,formatted_address,name,geometry&key=' + KEY,
+            url: 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=' + text + '&inputtype=textquery&fields=place_id,formatted_address,types,name,geometry&key=' + KEY,
             headers: {}
         };
 
-        axios(config)
+        var useMe = this.locationsService;
+
+        return axios(config)
             .then(async function (response) {
-                const parsedJson = (JSON.parse(response.data)).candidates[0];
-                const data: Partial<CreateLocationDto> = {
+                const parsedJson = response.data.candidates[0];
+                const data: CreateLocationDto = {
                     locationName: parsedJson.name,
                     locationTypes: parsedJson.types,
                     latitude: parsedJson.geometry.location.lat,
@@ -60,34 +63,30 @@ export class LocationsController {
                     address: parsedJson.formatted_address,
                     googlePlaceId: parsedJson.place_id,
                 };
-                console.log("1");
                 const config2 = {
                     method: 'get',
                     url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + data.googlePlaceId + '&inputtype=textquery&fields=formatted_phone_number,url,website&key=' + KEY,
                     headers: {}
                 };
                 
-                axios(config2)
+                return axios(config2)
                     .then(async function (response2) {
-                        const parsedJson2 = (JSON.parse(response2.data)).result;
+                        const parsedJson2 = response2.data.result;
                         data['phone'] = parsedJson2.formatted_phone_number;
                         data['locationUrl'] = parsedJson2.website;
                         data['googleMapsUrl'] = parsedJson2.url;
 
                         try {
-                            validateOrReject(data)
-                            const location = await this.locationsService.create(data);
+                            validateOrReject(data);
+                            const location = await useMe.create(data);
                             return {
                                 statusCode: HttpStatus.OK,
                                 message: 'Location created successfully',
                                 location
                             };
                         } catch (errors) {
-                            return {
-                                statusCode: HttpStatus.BAD_REQUEST,
-                                message: 'Caught promise rejection (validation failed).',
-                                errors: errors
-                            };
+                            console.log(errors)
+                            throw new BadRequestException;
                         }
                     })
             })

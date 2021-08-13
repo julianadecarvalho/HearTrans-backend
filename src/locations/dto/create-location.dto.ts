@@ -11,10 +11,10 @@ export class CreateLocationDto {
     readonly locationTypes: string[];
 
     @IsString()
-    googleMapsUrl: string;
+    googleMapsUrl?: string;
 
     @IsString()
-    locationUrl: string;
+    locationUrl?: string;
 
     @IsLatitude()
     readonly latitude: string;
@@ -23,7 +23,7 @@ export class CreateLocationDto {
     readonly longitude: string;
 
     @IsPhoneNumber('US')
-    phone: string;
+    phone?: string;
 
     @IsString()
     readonly address: string;

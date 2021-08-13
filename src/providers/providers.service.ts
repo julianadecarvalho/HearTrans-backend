@@ -25,13 +25,18 @@ export class ProvidersService {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
-        //I guess I'll hard code this with ternaries
-        for (const [key, value] of Object.entries(data)) {
-            console.log(key, value);
-            provider[key] = value;
-            console.log(provider[key]);
-        }
-        console.log(provider);
+
+        provider.fullName = data.fullName ? data.fullName : provider.fullName;
+        provider.otherNames = data.otherNames ? data.otherNames : provider.otherNames;
+        provider.titles = data.titles ? data.titles : provider.titles;
+        provider.specialties = data.specialties ? data.specialties : provider.specialties;
+        provider.languages = data.languages ? data.languages : provider.languages;
+        provider.services = data.services ? data.services : provider.services;
+        provider.remoteVisits = data.remoteVisits ? data.remoteVisits : provider.remoteVisits;
+        provider.slidingScalePay = data.slidingScalePay ? data.slidingScalePay : provider.slidingScalePay;
+        provider.locations = data.locations ? data.locations : provider.locations;
+        provider.reviews = data.reviews ? data.reviews : provider.reviews;
+
         this.providersRepository.save(provider);
         return this.providersRepository.findOne({ id });
     }
