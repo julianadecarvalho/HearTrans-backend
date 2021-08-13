@@ -1,4 +1,3 @@
-import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class ReviewResponse {
     readonly id: number;

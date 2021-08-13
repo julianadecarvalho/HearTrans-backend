@@ -16,8 +16,8 @@ import { LocationsService } from './locations.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { validateOrReject } from 'class-validator';
 import { LocationsEntity } from './location.entity';
-import { ProvidersEntity } from 'src/providers/provider.entity';
-import { ProvidersService } from 'src/providers/providers.service';
+import { ProvidersEntity } from '../providers/provider.entity';
+import { ProvidersService } from '../providers/providers.service';
 import { RequestBodyLocationWithin } from './dto/request-location.dto';
 
 require('dotenv').config()

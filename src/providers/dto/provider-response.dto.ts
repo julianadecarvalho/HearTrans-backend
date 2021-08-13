@@ -1,5 +1,5 @@
-import { LocationResponse } from "src/locations/dto/location-response.dto";
-import { ReviewResponse } from "src/provider-reviews/dto/review-response.dto";
+import { LocationResponse } from "../../locations/dto/location-response.dto";
+import { ReviewResponse } from "../../provider-reviews/dto/review-response.dto";
 
 export class ProviderResponse {
     readonly id: number;

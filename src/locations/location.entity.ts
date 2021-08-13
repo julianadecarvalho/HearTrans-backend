@@ -1,8 +1,7 @@
-import { ProvidersEntity } from 'src/providers/provider.entity';
+import { ProvidersEntity } from '../providers/provider.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, Index } from 'typeorm';
-import { Geometry, Point } from 'geojson';
+import { Point } from 'geojson';
 import { LocationResponse } from './dto/location-response.dto';
-import { ProviderReviewsService } from 'src/provider-reviews/provider-reviews.service';
 @Entity()
 export class LocationsEntity {
     @PrimaryGeneratedColumn()

@@ -1,4 +1,4 @@
-import { ProvidersEntity } from 'src/providers/provider.entity';
+import { ProvidersEntity } from '../providers/provider.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ReviewResponse } from './dto/review-response.dto';
 

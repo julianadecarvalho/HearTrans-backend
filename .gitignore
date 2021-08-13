@@ -6,8 +6,8 @@ lib-cov
 *.out
 *.pid
 *.gz
-*.env
 *.swp
+*.env
 
 pids
 logs
@@ -38,6 +38,7 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+build
 
 # ignore yarn.lock
 yarn.lock
