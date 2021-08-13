@@ -6,7 +6,7 @@
     "password": "postgres",
     "database": "heartrans_db",
     "entities": [
-        "dist/**/*.entity{.ts,.js}"
+        "dist/**/*.entity.js"
     ],
     "synchronize": "false"
 }
