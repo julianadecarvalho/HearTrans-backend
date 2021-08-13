@@ -5,6 +5,7 @@ export class ProviderResponse {
     readonly id: number;
     readonly fullName: string;
     readonly otherNames: string[];
+    readonly pronouns: string;
     readonly titles: string[];
     readonly specialties: string[];
     readonly languages: string[];

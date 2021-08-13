@@ -35,6 +35,9 @@ export class LocationsEntity {
     @Column({ type: "text" })
     googlePlaceId: string;
 
+    @Column({ type: "tsvector", nullable: true })
+    tsvector: string;
+
     @Index({ spatial: true })
     @Column({
         type: "geography",
@@ -44,7 +47,7 @@ export class LocationsEntity {
     })
     locationPoint: Point
 
-    @ManyToMany(() => ProvidersEntity, provider => provider.locations)
+    @ManyToMany(() => ProvidersEntity, provider => provider.locations,  { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
     @JoinTable()
     providers: ProvidersEntity[];
 

@@ -67,7 +67,7 @@ export class LocationsController {
                     url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' + data.googlePlaceId + '&inputtype=textquery&fields=formatted_phone_number,url,website&key=' + KEY,
                     headers: {}
                 };
-                
+
                 return axios(config2)
                     .then(async function (response2) {
                         const parsedJson2 = response2.data.result;
@@ -85,7 +85,7 @@ export class LocationsController {
                             };
                         } catch (errors) {
                             console.log(errors)
-                            throw new BadRequestException;
+                            throw new BadRequestException(errors);
                         }
                     })
             })
@@ -167,19 +167,19 @@ export class LocationsController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
+        console.log(location);
+        console.log(provider);
         try {
-            location.providers.push(provider)
-            await this.locationsService.update(locationId, location);
+            var data: Partial<CreateLocationDto> = {};
+            data["providers"] = location.providers ? [...location.providers, provider] : [provider];
+            await this.locationsService.update(locationId, data);
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Location updated successfully',
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            console.log(errors);
+            throw new BadRequestException(errors)
         }
     }
 

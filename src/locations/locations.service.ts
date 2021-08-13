@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Geometry, Point } from 'geojson';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Point } from 'geojson';
 import { InjectRepository, } from '@nestjs/typeorm';
-import { Repository, LessThan, getConnection } from 'typeorm';
+import { Repository } from 'typeorm';
 import { LocationsEntity } from './location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
 
@@ -15,21 +15,11 @@ export class LocationsService {
 
     async create(data: CreateLocationDto): Promise<LocationsEntity> {
 
-        const pointObject: Point = {
-            type: "Point",
-            coordinates: [data.longitude, data.latitude]
-        };
-        data.locationPoint = pointObject;
-
+        data = this.onLocationCreate(data);
 
         this.locationsRepository.create(data);
         const location = await this.locationsRepository.save(data);
         return location;
-    }
-
-    update(id: number, data: Partial<CreateLocationDto>): Promise<LocationsEntity> {
-        this.locationsRepository.update({ id }, data);
-        return this.locationsRepository.findOne({ id });
     }
 
     showAll(): Promise<LocationsEntity[]> {
@@ -39,6 +29,31 @@ export class LocationsService {
     showOne(id: number): Promise<LocationsEntity> {
         return this.locationsRepository.findOne(id);
     }
+
+    async update(id: number, data: Partial<CreateLocationDto>): Promise<LocationsEntity> {
+        var location = await this.showOne(id)
+        if (location === undefined) {
+            throw new NotFoundException('Invalid location id');
+        }
+
+        data = this.onLocationUpdate(data);
+
+        location.locationName = data.locationName ? data.locationName : location.locationName;
+        location.locationTypes = data.locationTypes ? data.locationTypes : location.locationTypes;
+        location.googleMapsUrl = data.googleMapsUrl ? data.googleMapsUrl : location.googleMapsUrl;
+        location.locationUrl = data.locationUrl ? data.locationUrl : location.locationUrl;
+        location.latitude = data.latitude ? data.latitude : location.latitude;
+        location.longitude = data.longitude ? data.longitude : location.longitude;
+        location.phone = data.phone ? data.phone : location.phone;
+        location.address = data.address ? data.address : location.address;
+        location.googlePlaceId = data.googlePlaceId ? data.googlePlaceId : location.googlePlaceId;
+        location.providers = data.providers ? data.providers : location.providers;
+
+        this.locationsRepository.save(location);
+        return this.locationsRepository.findOne({ id });
+    }
+
+
 
     searchWithin(distance: number, lat: number, lon: number, text: string): Promise<LocationsEntity[]> {
         let origin = {
@@ -61,5 +76,27 @@ export class LocationsService {
 
     async remove(id: number): Promise<void> {
         await this.locationsRepository.delete(id);
+    }
+
+    onLocationUpdate(data: Partial<CreateLocationDto>): Partial<CreateLocationDto> {
+        const pointObject: Point = {
+            type: "Point",
+            coordinates: [data.longitude, data.latitude]
+        };
+        data.locationPoint = pointObject;
+
+        // make tsvector here
+        return data;
+    }
+
+    onLocationCreate(data: CreateLocationDto): CreateLocationDto {
+        const pointObject: Point = {
+            type: "Point",
+            coordinates: [data.longitude, data.latitude]
+        };
+        data.locationPoint = pointObject;
+
+        // make tsvector here
+        return data;
     }
 }

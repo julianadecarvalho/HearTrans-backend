@@ -10,6 +10,9 @@ export class CreateProviderDto {
     @IsString({ each: true })
     readonly otherNames: string[];
 
+    @IsString()
+    readonly pronouns: string;
+
     @IsString({ each: true }) //MD, NP, etc?
     readonly titles: string[];
 

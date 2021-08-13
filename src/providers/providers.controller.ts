@@ -50,7 +50,7 @@ export class ProvidersController {
             };
         } catch (errors) {
             console.log(errors);
-            throw new BadRequestException;
+            throw new BadRequestException(errors);
         }
     }
 
@@ -97,20 +97,19 @@ export class ProvidersController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
+        console.log(location);
+        console.log(provider);
         try {
             var data: Partial<CreateProviderDto> = {};
-            data["locations"] = [...provider.locations, location]
+            data["locations"] = provider.locations ? [...provider.locations, location] : [location];
             await this.locationsService.update(locationId, data);
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Provider updated successfully',
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            console.log(errors);
+            throw new BadRequestException(errors);
         }
     }
 

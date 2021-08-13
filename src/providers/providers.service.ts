@@ -28,6 +28,7 @@ export class ProvidersService {
 
         provider.fullName = data.fullName ? data.fullName : provider.fullName;
         provider.otherNames = data.otherNames ? data.otherNames : provider.otherNames;
+        provider.pronouns = data.pronouns ? data.pronouns : provider.pronouns
         provider.titles = data.titles ? data.titles : provider.titles;
         provider.specialties = data.specialties ? data.specialties : provider.specialties;
         provider.languages = data.languages ? data.languages : provider.languages;

@@ -16,7 +16,7 @@ export class ProviderReviewsEntity {
     @Column({ type: "simple-array", default: [] })
     contentWarnings: string[]
 
-    @ManyToOne(() => ProvidersEntity, provider => provider.reviews)
+    @ManyToOne(() => ProvidersEntity, provider => provider.reviews, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
     provider: ProvidersEntity;
 
     revAsDict(): ReviewResponse {

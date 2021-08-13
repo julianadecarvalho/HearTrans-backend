@@ -5,6 +5,7 @@ import { CreateProviderDto } from './dto/create-provider.dto';
 import { ProviderResponse } from './dto/provider-response.dto';
 import { ReviewResponse } from 'src/provider-reviews/dto/review-response.dto';
 import { LocationResponse } from 'src/locations/dto/location-response.dto';
+import { runInThisContext } from 'vm';
 
 @Entity()
 export class ProvidersEntity {
@@ -16,6 +17,9 @@ export class ProvidersEntity {
 
     @Column({ type: "simple-array", default: [] })
     otherNames: string[];
+
+    @Column({ type: "text" })
+    pronouns: string;
 
     @Column({ type: "simple-array", default: [] }) //MD, NP, etc?
     titles: string[];
@@ -38,8 +42,7 @@ export class ProvidersEntity {
     @OneToMany(() => ProviderReviewsEntity, review => review.provider)
     reviews: ProviderReviewsEntity[];
 
-    @ManyToMany(() => LocationsEntity, location => location.providers, { cascade: true })
-    @JoinTable()
+    @ManyToMany(() => LocationsEntity, location => location.providers)
     locations: LocationsEntity[];
 
 
@@ -50,6 +53,7 @@ export class ProvidersEntity {
             fullName: this.fullName,
             otherNames: this.otherNames,
             titles: this.titles,
+            pronouns: this.pronouns,
             specialties: this.specialties,
             languages: this.languages,
             services: this.services,
@@ -68,6 +72,7 @@ export class ProvidersEntity {
             id: this.id,
             fullName: this.fullName,
             otherNames: this.otherNames,
+            pronouns: this.pronouns,
             titles: this.titles,
             specialties: this.specialties,
             languages: this.languages,
