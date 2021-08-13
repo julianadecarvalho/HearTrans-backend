@@ -19,7 +19,6 @@ import { LocationsEntity } from './location.entity';
 import { ProvidersEntity } from 'src/providers/provider.entity';
 import { ProvidersService } from 'src/providers/providers.service';
 import { RequestBodyLocationWithin } from './dto/request-location.dto';
-import { parse } from 'path/posix';
 
 require('dotenv').config()
 const KEY = process.env.KEY;
