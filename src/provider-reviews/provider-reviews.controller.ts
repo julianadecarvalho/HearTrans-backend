@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 
 import { ParseIntPipe } from '../common/parse-int.pipe';
-import { ProvidersService } from '../providers/providers.service';
-import { ProvidersEntity } from '../providers/provider.entity';
+import { ProvidersService } from 'src/providers/providers.service';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 import { ProviderReviewsService } from './provider-reviews.service';
 import { CreateProviderReviewDto } from './dto/create-provider-review.dto';
 import { validateOrReject } from 'class-validator';

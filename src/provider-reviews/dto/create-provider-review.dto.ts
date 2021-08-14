@@ -1,5 +1,5 @@
-import { IsInt, IsString } from 'class-validator';
-import { ProvidersEntity } from '../../providers/provider.entity';
+import { IsInt, IsNumber, IsNumberString, IsString } from 'class-validator';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class CreateProviderReviewDto {
     @IsInt()

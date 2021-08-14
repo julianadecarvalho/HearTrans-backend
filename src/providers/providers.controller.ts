@@ -19,8 +19,8 @@ import { CreateProviderDto } from './dto/create-provider.dto';
 import { validateOrReject } from 'class-validator';
 import { ProvidersEntity } from './provider.entity';
 import { ProviderResponse } from './dto/provider-response.dto';
-import { LocationsService } from '../locations/locations.service';
-import { LocationsEntity } from '../locations/location.entity';
+import { LocationsService } from 'src/locations/locations.service';
+import { LocationsEntity } from 'src/locations/location.entity';
 @Controller('providers')
 export class ProvidersController {
     constructor(private providersService: ProvidersService, @Inject(forwardRef(() => LocationsService)) private locationsService: LocationsService) { }

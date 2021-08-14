@@ -1,6 +1,6 @@
 import { IsString, IsBoolean } from 'class-validator';
-import { LocationsEntity } from '../../locations/location.entity';
-import { ProviderReviewsEntity } from '../../provider-reviews/provider-review.entity';
+import { LocationsEntity } from 'src/locations/location.entity';
+import { ProviderReviewsEntity } from 'src/provider-reviews/provider-review.entity';
 export class CreateProviderDto {
     readonly id?: number;
 

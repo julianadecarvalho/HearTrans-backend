@@ -1,5 +1,5 @@
 import { IsString, IsPhoneNumber, IsLatitude, IsLongitude } from 'class-validator';
-import { ProvidersEntity } from '../../providers/provider.entity';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 import { Point } from 'geojson';
 export class CreateLocationDto {
     readonly id?: number;

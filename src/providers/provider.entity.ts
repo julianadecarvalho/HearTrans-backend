@@ -1,9 +1,11 @@
-import { ProviderReviewsEntity } from '../provider-reviews/provider-review.entity';
-import { LocationsEntity } from '../locations/location.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
+import { ProviderReviewsEntity } from 'src/provider-reviews/provider-review.entity';
+import { LocationsEntity } from 'src/locations/location.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { CreateProviderDto } from './dto/create-provider.dto';
 import { ProviderResponse } from './dto/provider-response.dto';
-import { ReviewResponse } from '../provider-reviews/dto/review-response.dto';
-import { LocationResponse } from '../locations/dto/location-response.dto';
+import { ReviewResponse } from 'src/provider-reviews/dto/review-response.dto';
+import { LocationResponse } from 'src/locations/dto/location-response.dto';
+import { runInThisContext } from 'vm';
 
 @Entity()
 export class ProvidersEntity {
