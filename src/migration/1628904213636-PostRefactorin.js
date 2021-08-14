@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class PostRefactoring1628898940295 {
-    name = 'PostRefactoring1628898940295'
+module.exports = class PostRefactorin1628904213636 {
+    name = 'PostRefactorin1628904213636'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "provider_reviews_entity" ("id" SERIAL NOT NULL, "rating" integer NOT NULL, "reviewBody" text NOT NULL, "contentWarnings" text NOT NULL DEFAULT '[]', "providerId" integer, CONSTRAINT "PK_a0915c9d82ae0d52eb2cbd5220d" PRIMARY KEY ("id"))`);

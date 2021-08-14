@@ -45,9 +45,9 @@ export class LocationsEntity {
         srid: 4326,
         nullable: true,
     })
-    locationPoint: Point
+    locationPoint: Point;
 
-    @ManyToMany(() => ProvidersEntity, provider => provider.locations,  { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+    @ManyToMany(() => ProvidersEntity, provider => provider.locations,  { cascade: true })
     @JoinTable()
     providers: ProvidersEntity[];
 

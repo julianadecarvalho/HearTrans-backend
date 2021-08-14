@@ -84,17 +84,14 @@ export class LocationsController {
                                 location
                             };
                         } catch (errors) {
-                            console.log(errors)
+                            console.log(errors);
                             throw new BadRequestException(errors);
                         }
                     })
             })
             .catch(function (error) {
-                return {
-                    statusCode: HttpStatus.BAD_REQUEST,
-                    message: 'ERROR.',
-                    errors: error
-                };
+                console.log(error);
+                throw new BadRequestException(error);
             });
     }
 
@@ -105,10 +102,11 @@ export class LocationsController {
         if (location === undefined) {
             throw new NotFoundException('Invalid location id');
         }
+        const locationResponse = location.locAsDict()
         return {
             statusCode: HttpStatus.OK,
             message: 'Location fetched successfully',
-            location,
+            locationResponse,
         };
     }
 
@@ -149,11 +147,8 @@ export class LocationsController {
                 message: 'Location updated successfully',
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            console.log(errors);
+            throw new BadRequestException(errors);
         }
     }
 
@@ -167,15 +162,16 @@ export class LocationsController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
-        console.log(location);
-        console.log(provider);
+
         try {
             var data: Partial<CreateLocationDto> = {};
             data["providers"] = location.providers ? [...location.providers, provider] : [provider];
-            await this.locationsService.update(locationId, data);
+            const newlocation = await this.locationsService.update(locationId, data);
+
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Location updated successfully',
+                newlocation,
             };
         } catch (errors) {
             console.log(errors);

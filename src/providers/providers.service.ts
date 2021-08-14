@@ -39,15 +39,15 @@ export class ProvidersService {
         provider.reviews = data.reviews ? data.reviews : provider.reviews;
 
         this.providersRepository.save(provider);
-        return this.providersRepository.findOne({ id });
+        return this.providersRepository.findOne( id, { relations: ["locations", "reviews"] } );
     }
 
     showAll(): Promise<ProvidersEntity[]> {
-        return this.providersRepository.find();
+        return this.providersRepository.find({ relations: ["locations", "reviews"] });
     }
 
     showOne(id: number): Promise<ProvidersEntity> {
-        return this.providersRepository.findOne(id);
+        return this.providersRepository.findOne(id, { relations: ["locations", "reviews"] });
     }
 
     async remove(id: number): Promise<void> {

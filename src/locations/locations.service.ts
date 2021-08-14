@@ -23,11 +23,11 @@ export class LocationsService {
     }
 
     showAll(): Promise<LocationsEntity[]> {
-        return this.locationsRepository.find();
+        return this.locationsRepository.find({ relations: ["providers"] });
     }
 
     showOne(id: number): Promise<LocationsEntity> {
-        return this.locationsRepository.findOne(id);
+        return this.locationsRepository.findOne(id, { relations: ["providers"] });
     }
 
     async update(id: number, data: Partial<CreateLocationDto>): Promise<LocationsEntity> {
@@ -49,8 +49,7 @@ export class LocationsService {
         location.googlePlaceId = data.googlePlaceId ? data.googlePlaceId : location.googlePlaceId;
         location.providers = data.providers ? data.providers : location.providers;
 
-        this.locationsRepository.save(location);
-        return this.locationsRepository.findOne({ id });
+        return this.locationsRepository.save(location);
     }
 
 

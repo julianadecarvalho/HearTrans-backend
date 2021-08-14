@@ -28,7 +28,6 @@ export class ProvidersController {
     @Get()
     async showAllProviders() {
         var providers: ProvidersEntity[] = await this.providersService.showAll();
-        console.log(providers[0])
         var providersResponses: ProviderResponse[] = providers.map(function (provider: ProvidersEntity): ProviderResponse { return provider.provAsDict() });
         return {
             statusCode: HttpStatus.OK,
@@ -97,8 +96,7 @@ export class ProvidersController {
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
-        console.log(location);
-        console.log(provider);
+
         try {
             var data: Partial<CreateProviderDto> = {};
             data["locations"] = provider.locations ? [...provider.locations, location] : [location];
