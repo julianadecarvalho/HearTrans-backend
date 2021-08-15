@@ -25,8 +25,6 @@ export class ProviderReviewsEntity {
             rating: this.rating,
             reviewBody: this.reviewBody,
             contentWarnings: this.contentWarnings,
-            providerId: this.provider.id,
-            providerName: this.provider.fullName,
         }
     }
 }
