@@ -2,7 +2,6 @@ import { IsInt, IsNumber, IsNumberString, IsString } from 'class-validator';
 import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class CreateProviderReviewDto {
-    @IsInt()
     readonly id?: number;
     
     @IsInt()
