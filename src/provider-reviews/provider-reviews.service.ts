@@ -8,29 +8,29 @@ import { CreateProviderReviewDto } from './dto/create-provider-review.dto';
 export class ProviderReviewsService {
     constructor(
         @InjectRepository(ProviderReviewsEntity)
-        private providersRepository: Repository<ProviderReviewsEntity>,
+        private reviewRepository: Repository<ProviderReviewsEntity>,
     ) { }
 
     async create(data: CreateProviderReviewDto): Promise<ProviderReviewsEntity> {
-        this.providersRepository.create(data);
-        const provider = await this.providersRepository.save(data);
-        return provider;
+        this.reviewRepository.create(data);
+        const review = await this.reviewRepository.save(data);
+        return review;
     }
 
     update(id: number, data: Partial<CreateProviderReviewDto>): Promise<ProviderReviewsEntity> {
-        this.providersRepository.update({ id }, data);
-        return this.providersRepository.findOne({ id });
+        this.reviewRepository.update({ id }, data);
+        return this.reviewRepository.findOne({ id });
     }
 
     showAll(): Promise<ProviderReviewsEntity[]> {
-        return this.providersRepository.find();
+        return this.reviewRepository.find();
     }
 
     showOne(id: number): Promise<ProviderReviewsEntity> {
-        return this.providersRepository.findOne(id);
+        return this.reviewRepository.findOne(id);
     }
 
     async remove(id: number): Promise<void> {
-        await this.providersRepository.delete(id);
+        await this.reviewRepository.delete(id);
     }
 }

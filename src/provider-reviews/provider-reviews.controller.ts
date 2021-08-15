@@ -10,6 +10,7 @@ import {
     Inject,
     forwardRef,
     NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 
 import { ParseIntPipe } from '../common/parse-int.pipe';
@@ -53,18 +54,14 @@ export class ProviderReviewsController {
         try {
             data.provider = provider
             validateOrReject(data)
-            const review = await this.providerReviewsService.create(data);
+            const review = await (await this.providerReviewsService.create(data)).revAsDict();
             return {
                 statusCode: HttpStatus.OK,
                 message: 'ProviderReview created successfully',
                 review
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            throw new BadRequestException(errors);
         }
     }
 
@@ -78,17 +75,14 @@ export class ProviderReviewsController {
 
         try {
             validateOrReject(data);
-            await this.providerReviewsService.update(reviewId, data);
+            const review = await (await this.providerReviewsService.update(reviewId, data)).revAsDict();
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Review updated successfully',
+                review,
             };
         } catch (errors) {
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            throw new BadRequestException(errors);
         }
     }
 

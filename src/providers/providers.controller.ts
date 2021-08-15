@@ -16,6 +16,7 @@ import {
 import { ParseIntPipe } from '../common/parse-int.pipe';
 import { ProvidersService } from './providers.service';
 import { CreateProviderDto } from './dto/create-provider.dto';
+import { CreateLocationDto } from 'src/locations/dto/create-location.dto';
 import { validateOrReject } from 'class-validator';
 import { ProvidersEntity } from './provider.entity';
 import { ProviderResponse } from './dto/provider-response.dto';
@@ -71,18 +72,15 @@ export class ProvidersController {
     async uppdateProvider(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateProviderDto>) {
         try {
             validateOrReject(data);
-            await this.providersService.update(id, data);
+            const newProvider = await (await this.providersService.update(id, data)).provAsDict();
             return {
                 statusCode: HttpStatus.OK,
                 message: 'Provider updated successfully',
+                newProvider,
             };
         } catch (errors) {
             console.log(errors);
-            return {
-                statusCode: HttpStatus.BAD_REQUEST,
-                message: 'Caught promise rejection (validation failed).',
-                errors: errors
-            };
+            throw new BadRequestException(errors);
         }
     }
 
@@ -98,16 +96,18 @@ export class ProvidersController {
         }
 
         try {
-            var data: Partial<CreateProviderDto> = {};
-            data["locations"] = provider.locations ? [...provider.locations, location] : [location];
-            await this.locationsService.update(locationId, data);
+            var data: Partial<CreateLocationDto> = {};
+            data["providers"] = location.providers ? [...location.providers, provider] : [provider];
+            const newlocation = await this.locationsService.update(locationId, data);
+
             return {
                 statusCode: HttpStatus.OK,
-                message: 'Provider updated successfully',
+                message: 'Location updated successfully',
+                newlocation,
             };
         } catch (errors) {
             console.log(errors);
-            throw new BadRequestException(errors);
+            throw new BadRequestException(errors)
         }
     }
 
