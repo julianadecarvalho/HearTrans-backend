@@ -110,6 +110,7 @@ export class LocationsController {
     @Get('query/:query')
     async findLocationPerQuery(@Param('query') query: string) {
         const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
+        console.log(locations)
         if (locations === []) {
             throw new NotFoundException('The search returned no locations :(');
         }
