@@ -199,6 +199,7 @@ export class LocationsController {
         try {
             var locations: LocationsEntity[] = await this.locationsService.showAll();
             locations.map(location => this.updateLocation(location.id, { tsvector: "hello" }));
+            // this.locationsService.updateAllstringstoTsvectors();
             return locations;
         } catch (errors) {
             console.log(errors);

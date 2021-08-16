@@ -46,14 +46,14 @@ export class ProviderReviewsController {
     }
 
     @Post(':providerId')
-    // add api call to google here to populate the data
+    // This is not working with axios, but works with postman???
     async createNewReview(@Param('providerId', new ParseIntPipe()) providerId: number, @Body() data: CreateProviderReviewDto) {
+        console.log(data);
         const provider: ProvidersEntity = await this.providersService.showOne(providerId);
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
         try {
-            console.log(data);
             data.provider = provider
             validateOrReject(data)
             const review: ProviderReviewsEntity = await this.providerReviewsService.create(data);
@@ -64,7 +64,7 @@ export class ProviderReviewsController {
             };
         } catch (errors) {
             console.log(errors);
-            throw new BadRequestException({data, errors});
+            throw new BadRequestException(errors);
         }
     }
 

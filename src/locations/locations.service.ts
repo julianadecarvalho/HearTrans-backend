@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Point } from 'geojson';
 import { InjectRepository, } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import { LocationsEntity } from './location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { ProvidersEntity } from 'src/providers/provider.entity';
@@ -55,9 +55,10 @@ export class LocationsService {
     }
 
     searchByQuery(query: string): Promise<LocationsEntity[]> {
-        let locations = this.locationsRepository.createQueryBuilder('location')
+        let locations = this.locationsRepository
+            .createQueryBuilder('location')
             .select('*')
-            .where('location.tsvector @@ websearch_to_tsquery(:query)', {query: query})
+            .where('location.tsvector @@ websearch_to_tsquery(:query)', { query: query.toLowerCase() })
             .getRawMany()
         return locations;
     }
@@ -93,6 +94,7 @@ export class LocationsService {
         loc.locationPoint = pointObject;
 
         const hugeString = this.makeHugeString(loc)
+        console.log(hugeString);
         loc.tsvector = hugeString;
         return loc;
     }
@@ -106,7 +108,7 @@ export class LocationsService {
 
         var hugeString = data.locationName + " " + data.locationTypes.join(" ");
         hugeString += " " + data.address;
-        data.tsvector = hugeString;
+        data.tsvector = hugeString.toLowerCase().replace('/', " ");
         return data;
     }
 
@@ -114,7 +116,7 @@ export class LocationsService {
         var hugeString = loc.locationName + " " + loc.locationTypes.join(" ");
         hugeString += " " + loc.address;
         hugeString += " " + loc.providers.reduce((accumulator, currentProvider) => accumulator + " " + this.makeProviderString(currentProvider), "")
-        return hugeString;
+        return hugeString.toLowerCase().replace(/\//g, " ");
     }
 
     makeProviderString(prov: ProvidersEntity): string {
@@ -126,4 +128,15 @@ export class LocationsService {
         provString += " " + prov.titles.join(" ");
         return provString;
     }
+
+    // async updateAllstringstoTsvectors() {
+    //     let locations = await getConnection()
+    //         .createQueryBuilder()
+    //         .update(LocationsEntity)
+    //         .set({ tsvector: () => "to_tsvector()" })
+    //         .updateEntity(true)
+    //         .execute();
+
+    //     console.log(locations);
+    // }
 }
