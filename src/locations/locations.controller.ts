@@ -109,8 +109,10 @@ export class LocationsController {
 
     @Get('query/:query')
     async findLocationPerQuery(@Param('query') query: string) {
-        const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
-        if (locations === []) {
+        let locations: LocationsEntity[] = await this.locationsService.searchByQuery(query)
+
+
+        if (locations == []) {
             throw new NotFoundException('The search returned no locations :(');
         }
         return {
@@ -195,6 +197,7 @@ export class LocationsController {
         try {
             var locations: LocationsEntity[] = await this.locationsService.showAll();
             locations.map(location => this.updateLocation(location.id, { tsvector: "hello" }));
+            await this.locationsService.regenerateAllVectors();
             // this.locationsService.updateAllstringstoTsvectors();
             return locations;
         } catch (errors) {

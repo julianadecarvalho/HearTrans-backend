@@ -38,6 +38,9 @@ export class LocationsEntity {
     @Column({ type: "tsvector", nullable: true })
     tsvector: string;
 
+    @Column({ type: "text", nullable: true })
+    hugestring: string;
+
     @Index({ spatial: true })
     @Column({
         type: "geography",
@@ -47,7 +50,7 @@ export class LocationsEntity {
     })
     locationPoint: Point;
 
-    @ManyToMany(() => ProvidersEntity, provider => provider.locations,  { cascade: true })
+    @ManyToMany(() => ProvidersEntity, provider => provider.locations, { cascade: true })
     @JoinTable()
     providers: ProvidersEntity[];
 

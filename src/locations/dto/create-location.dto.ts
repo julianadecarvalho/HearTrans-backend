@@ -33,6 +33,8 @@ export class CreateLocationDto {
 
     tsvector?: string;
 
+    hugestring?: string;
+
     providers?: ProvidersEntity[];
 
     locationPoint?: Point;

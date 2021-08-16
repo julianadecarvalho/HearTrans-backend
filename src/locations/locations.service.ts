@@ -21,6 +21,7 @@ export class LocationsService {
 
         this.locationsRepository.create(data);
         const location = await this.locationsRepository.save(data);
+        await this.regenerateAllVectors();
         return location;
     }
 
@@ -58,9 +59,8 @@ export class LocationsService {
         let locations = this.locationsRepository
             .createQueryBuilder('location')
             .leftJoinAndSelect('location.providers', 'provider')
-            .where('location.tsvector @@ websearch_to_tsquery(:query)', { query: query.toLowerCase() })
+            .where("location.tsvector @@ websearch_to_tsquery(:query)", { query: query })
             .getMany()
-            console.log(locations)
         return locations;
     }
 
@@ -95,7 +95,7 @@ export class LocationsService {
         loc.locationPoint = pointObject;
 
         const hugeString = this.makeHugeString(loc)
-        loc.tsvector = hugeString;
+        loc.hugestring = hugeString;
         return loc;
     }
 
@@ -108,7 +108,7 @@ export class LocationsService {
 
         var hugeString = data.locationName + " " + data.locationTypes.join(" ");
         hugeString += " " + data.address;
-        data.tsvector = hugeString.toLowerCase().replace('/', " ");
+        data.hugestring = hugeString.toLowerCase().replace(/\//g, " ").replace(/,/g, "");
         return data;
     }
 
@@ -116,7 +116,7 @@ export class LocationsService {
         var hugeString = loc.locationName + " " + loc.locationTypes.join(" ");
         hugeString += " " + loc.address;
         hugeString += " " + loc.providers.reduce((accumulator, currentProvider) => accumulator + " " + this.makeProviderString(currentProvider), "")
-        return hugeString.toLowerCase().replace(/\//g, " ");
+        return hugeString.toLowerCase().replace(/\//g, " ").replace(/,/g, "");
     }
 
     makeProviderString(prov: ProvidersEntity): string {
@@ -127,6 +127,19 @@ export class LocationsService {
         provString += " " + prov.specialties.join(" ");
         provString += " " + prov.titles.join(" ");
         return provString;
+    }
+
+    async regenerateAllVectors() {
+
+        let locations = await getConnection()
+            .createQueryBuilder()
+            .update(LocationsEntity)
+            .set({ tsvector: () => "to_tsvector('english'::regconfig, hugestring)" })
+            .updateEntity(true)
+            .execute();
+
+        console.log(locations);
+
     }
 
 }
