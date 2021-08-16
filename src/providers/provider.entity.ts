@@ -45,8 +45,8 @@ export class ProvidersEntity {
     @ManyToMany(() => LocationsEntity, location => location.providers)
     locations: LocationsEntity[];
 
-
     avgRating?: string
+
     provAsDict(): ProviderResponse {
         return {
             id: this.id,

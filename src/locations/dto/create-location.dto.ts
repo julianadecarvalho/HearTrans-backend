@@ -31,6 +31,8 @@ export class CreateLocationDto {
     @IsString()
     readonly googlePlaceId: string;
 
+    tsvector?: string;
+
     providers?: ProvidersEntity[];
 
     locationPoint?: Point;

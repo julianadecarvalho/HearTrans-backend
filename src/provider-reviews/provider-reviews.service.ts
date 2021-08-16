@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProvidersEntity } from 'src/providers/provider.entity';
 import { ProviderReviewsEntity } from './provider-review.entity';
 import { CreateProviderReviewDto } from './dto/create-provider-review.dto';
 

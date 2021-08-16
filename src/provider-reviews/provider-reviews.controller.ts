@@ -20,6 +20,7 @@ import { ProviderReviewsService } from './provider-reviews.service';
 import { CreateProviderReviewDto } from './dto/create-provider-review.dto';
 import { validateOrReject } from 'class-validator';
 import { ProviderReviewsEntity } from './provider-review.entity';
+import { ReviewResponse } from './dto/review-response.dto';
 
 @Controller('provider/reviews')
 export class ProviderReviewsController {
@@ -46,21 +47,22 @@ export class ProviderReviewsController {
 
     @Post(':providerId')
     // add api call to google here to populate the data
-    async createProviderReview(@Param('providerId', new ParseIntPipe()) providerId: number, @Body() data: CreateProviderReviewDto) {
+    async createNewReview(@Param('providerId', new ParseIntPipe()) providerId: number, @Body() data: CreateProviderReviewDto) {
         const provider: ProvidersEntity = await this.providersService.showOne(providerId);
         if (provider === undefined) {
             throw new NotFoundException('Invalid provider id');
         }
         try {
             data.provider = provider
-            validateOrReject(data)
-            const review = await (await this.providerReviewsService.create(data)).revAsDict();
+            //validateOrReject(data)
+            const review: ProviderReviewsEntity = await this.providerReviewsService.create(data);
             return {
                 statusCode: HttpStatus.OK,
                 message: 'ProviderReview created successfully',
-                review
+                review,
             };
         } catch (errors) {
+            console.log(errors);
             throw new BadRequestException(errors);
         }
     }

@@ -4,6 +4,8 @@ import { InjectRepository, } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocationsEntity } from './location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
+import { ProvidersEntity } from 'src/providers/provider.entity';
+import { ProviderHttpModule } from 'src/providers/providers-http.module';
 
 
 @Injectable()
@@ -36,8 +38,6 @@ export class LocationsService {
             throw new NotFoundException('Invalid location id');
         }
 
-        data = this.onLocationUpdate(data);
-
         location.locationName = data.locationName ? data.locationName : location.locationName;
         location.locationTypes = data.locationTypes ? data.locationTypes : location.locationTypes;
         location.googleMapsUrl = data.googleMapsUrl ? data.googleMapsUrl : location.googleMapsUrl;
@@ -49,10 +49,18 @@ export class LocationsService {
         location.googlePlaceId = data.googlePlaceId ? data.googlePlaceId : location.googlePlaceId;
         location.providers = data.providers ? data.providers : location.providers;
 
+        location = this.onLocationUpdate(location);
+
         return this.locationsRepository.save(location);
     }
 
-
+    searchByQuery(query: string): Promise<LocationsEntity[]> {
+        let locations = this.locationsRepository.createQueryBuilder('location')
+            .select('*')
+            .where('location.tsvector @@ websearch_to_tsquery(:query)', {query: query})
+            .getRawMany()
+        return locations;
+    }
 
     searchWithin(distance: number, lat: number, lon: number, text: string): Promise<LocationsEntity[]> {
         let origin = {
@@ -60,7 +68,7 @@ export class LocationsService {
             coordinates: [lon, lat]
         };
         let locations = this.locationsRepository
-            .createQueryBuilder('t_test_location')
+            .createQueryBuilder('location')
             .select(['ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
             .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
             .orderBy("distance", "ASC")
@@ -77,15 +85,16 @@ export class LocationsService {
         await this.locationsRepository.delete(id);
     }
 
-    onLocationUpdate(data: Partial<CreateLocationDto>): Partial<CreateLocationDto> {
+    onLocationUpdate(loc: LocationsEntity): LocationsEntity {
         const pointObject: Point = {
             type: "Point",
-            coordinates: [data.longitude, data.latitude]
+            coordinates: [loc.longitude, loc.latitude]
         };
-        data.locationPoint = pointObject;
+        loc.locationPoint = pointObject;
 
-        // make tsvector here
-        return data;
+        const hugeString = this.makeHugeString(loc)
+        loc.tsvector = hugeString;
+        return loc;
     }
 
     onLocationCreate(data: CreateLocationDto): CreateLocationDto {
@@ -95,7 +104,26 @@ export class LocationsService {
         };
         data.locationPoint = pointObject;
 
-        // make tsvector here
+        var hugeString = data.locationName + " " + data.locationTypes.join(" ");
+        hugeString += " " + data.address;
+        data.tsvector = hugeString;
         return data;
+    }
+
+    makeHugeString(loc: LocationsEntity): string {
+        var hugeString = loc.locationName + " " + loc.locationTypes.join(" ");
+        hugeString += " " + loc.address;
+        hugeString += " " + loc.providers.reduce((accumulator, currentProvider) => accumulator + " " + this.makeProviderString(currentProvider), "")
+        return hugeString;
+    }
+
+    makeProviderString(prov: ProvidersEntity): string {
+        var provString = prov.fullName + " " + prov.languages.join(" ");
+        provString += " " + prov.otherNames.join(" ");
+        provString += " " + prov.pronouns;
+        provString += " " + prov.services.join(" ");
+        provString += " " + prov.specialties.join(" ");
+        provString += " " + prov.titles.join(" ");
+        return provString;
     }
 }

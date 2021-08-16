@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsNumberString, IsString } from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
 import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class CreateProviderReviewDto {

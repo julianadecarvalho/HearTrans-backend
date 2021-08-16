@@ -110,6 +110,21 @@ export class LocationsController {
         };
     }
 
+    @Get('query/:query')
+    async findLocationPerQuery(@Param('query') query: string) {
+        const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
+        console.log(locations);
+        if (locations === []) {
+            throw new NotFoundException('The search returned no locations :(');
+        }
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'Location fetched successfully',
+            locations,
+        };
+
+    }
+
     @Get('search/within')
     //NOT DONE YET
     //add call to the searchwithin function after parsing the json
@@ -179,6 +194,17 @@ export class LocationsController {
         }
     }
 
+    @Post('updateall')
+    async updateAllLocations() {
+        try {
+            var locations: LocationsEntity[] = await this.locationsService.showAll();
+            locations.map(location => this.updateLocation(location.id, { tsvector: "hello" }));
+            return locations;
+        } catch (errors) {
+            console.log(errors);
+            throw new BadRequestException(errors)
+        }
+    }
 
     @Delete(':id')
     async deleteLocation(@Param('id', new ParseIntPipe()) id: number) {
