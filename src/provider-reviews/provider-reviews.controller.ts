@@ -64,7 +64,7 @@ export class ProviderReviewsController {
             };
         } catch (errors) {
             console.log(errors);
-            throw new BadRequestException(data, errors);
+            throw new BadRequestException({data, errors});
         }
     }
 
