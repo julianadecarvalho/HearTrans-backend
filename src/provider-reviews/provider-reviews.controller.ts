@@ -55,7 +55,7 @@ export class ProviderReviewsController {
         try {
             console.log(data);
             data.provider = provider
-            //validateOrReject(data)
+            validateOrReject(data)
             const review: ProviderReviewsEntity = await this.providerReviewsService.create(data);
             return {
                 statusCode: HttpStatus.OK,
@@ -64,7 +64,7 @@ export class ProviderReviewsController {
             };
         } catch (errors) {
             console.log(errors);
-            throw new BadRequestException(errors);
+            throw new BadRequestException(data, errors);
         }
     }
 
