@@ -4,7 +4,7 @@ import { ProvidersEntity } from 'src/providers/provider.entity';
 export class CreateProviderReviewDto {
     readonly id?: number;
     
-    @IsInt()
+    @IsString()
     readonly rating: number;
 
     @IsString()
