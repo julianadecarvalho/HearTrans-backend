@@ -21,7 +21,7 @@ export class LocationsService {
 
         this.locationsRepository.create(data);
         const location = await this.locationsRepository.save(data);
-        await this.regenerateAllVectors();
+        await this.regenerateOneVector(location.id);
         return location;
     }
 
@@ -52,7 +52,9 @@ export class LocationsService {
 
         location = this.onLocationUpdate(location);
 
-        return this.locationsRepository.save(location);
+        let newLocation = await this.locationsRepository.save(location);
+        await this.regenerateOneVector(id);
+        return newLocation;
     }
 
     searchByQuery(query: string): Promise<LocationsEntity[]> {
@@ -130,16 +132,22 @@ export class LocationsService {
     }
 
     async regenerateAllVectors() {
-
         let locations = await getConnection()
             .createQueryBuilder()
             .update(LocationsEntity)
             .set({ tsvector: () => "to_tsvector('english'::regconfig, hugestring)" })
             .updateEntity(true)
             .execute();
+    }
 
-        console.log(locations);
-
+    async regenerateOneVector(id: number) {
+        let locations = await getConnection()
+            .createQueryBuilder()
+            .update(LocationsEntity)
+            .set({ tsvector: () => "to_tsvector('english'::regconfig, hugestring)" })
+            .where("id = :id", { id: id })
+            .updateEntity(true)
+            .execute();
     }
 
 }
