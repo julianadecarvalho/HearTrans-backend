@@ -128,14 +128,4 @@ export class LocationsService {
         return provString;
     }
 
-    // async updateAllstringstoTsvectors() {
-    //     let locations = await getConnection()
-    //         .createQueryBuilder()
-    //         .update(LocationsEntity)
-    //         .set({ tsvector: () => "to_tsvector()" })
-    //         .updateEntity(true)
-    //         .execute();
-
-    //     console.log(locations);
-    // }
 }

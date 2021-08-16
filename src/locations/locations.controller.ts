@@ -37,9 +37,6 @@ export class LocationsController {
     }
 
     @Post('new/:text')
-    // add call to google place id finder so we can use and make call to
-    // add call to google place details api around here to create the location data
-    // we should look into json parsing for this 
     async createLocation(@Param('text') text: string) {
 
         var axios = require('axios');
@@ -113,7 +110,6 @@ export class LocationsController {
     @Get('query/:query')
     async findLocationPerQuery(@Param('query') query: string) {
         const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
-        console.log(locations);
         if (locations === []) {
             throw new NotFoundException('The search returned no locations :(');
         }

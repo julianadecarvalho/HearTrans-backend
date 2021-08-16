@@ -48,9 +48,9 @@ export class ProviderReviewsController {
     @Post(':providerId')
     // This is not working with axios, but works with postman???
     async createNewReview(@Param('providerId', new ParseIntPipe()) providerId: number, @Body() data: CreateProviderReviewDto) {
-        console.log(data);
         const provider: ProvidersEntity = await this.providersService.showOne(providerId);
         if (provider === undefined) {
+
             throw new NotFoundException('Invalid provider id');
         }
         try {
