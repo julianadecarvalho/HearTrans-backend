@@ -60,6 +60,7 @@ export class LocationsService {
             .leftJoinAndSelect('location.providers', 'provider')
             .where('location.tsvector @@ websearch_to_tsquery(:query)', { query: query.toLowerCase() })
             .getMany()
+            console.log(locations)
         return locations;
     }
 
