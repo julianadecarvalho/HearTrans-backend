@@ -50,6 +50,15 @@ export class ProvidersService {
         return this.providersRepository.findOne(id, { relations: ["locations", "reviews"] });
     }
 
+    searchByQuery(query: string): Promise<ProvidersEntity[]> {
+        let providers = this.providersRepository
+            .createQueryBuilder('provider')
+            .leftJoinAndSelect('provider.locations', 'location')
+            .where('location.tsvector @@ websearch_to_tsquery(:query)', { query: query.toLowerCase() })
+            .getMany()
+        return providers;
+    }
+
     async remove(id: number): Promise<void> {
         await this.update(id, {locations: []});
         await this.providersRepository.delete(id);

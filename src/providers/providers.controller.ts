@@ -70,21 +70,22 @@ export class ProvidersController {
 
     @Get('query/:query')
     async findProviderPerQuery(@Param('query') query: string) {
-        const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
-        if (locations === []) {
-            throw new NotFoundException('The search returned no providers :(');
-        }
-        try {
-            let locationsWithProviders = [];
-            for (let location of locations) {
-                const locProv = await this.locationsService.showOne(location.id);
-                locationsWithProviders.push(locProv);
-            }
-            const providers = locationsWithProviders.reduce((acc: ProvidersEntity[], location) => acc.concat(location.providers), []);
+        if (query === '') {
+            this.showAllProviders();
+
+        } try {
+            const providers: ProvidersEntity[] = await this.providersService.searchByQuery(query);
+
+            if (providers === []) {
+                throw new NotFoundException('The search returned no providers :(');
+            };
+
+            var providersResponses: ProviderResponse[] = providers.map(function (provider: ProvidersEntity): ProviderResponse { return provider.provAsDict() });
+
             return {
                 statusCode: HttpStatus.OK,
                 message: 'provider fetched successfully',
-                providers,
+                providersResponses
             };
         } catch (errors) {
             console.log(errors);
