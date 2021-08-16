@@ -68,6 +68,22 @@ export class ProvidersController {
         };
     }
 
+    // @Get('query/:query')
+    // async findProviderPerQuery(@Param('query') query: string) {
+    //     const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
+    //     if (locations === []) {
+    //         throw new NotFoundException('The search returned no providers :(');
+    //     }
+    //     console.log(locations);
+    //     const providers = getlocationsWithProviders(locations).then(function (result) { result.reduce((acc: ProvidersEntity[], location) => acc.concat(location.providers), []) })
+
+    //     return {
+    //         statusCode: HttpStatus.OK,
+    //         message: 'provider fetched successfully',
+    //         providers,
+    //     };
+    // }
+
     @Patch(':id')
     async uppdateProvider(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateProviderDto>) {
         try {
@@ -127,3 +143,6 @@ export class ProvidersController {
 
     }
 }
+
+// async function getlocationsWithProviders(locations: LocationsEntity[]): LocationsEntity[] {
+//     return locations.map((location) => (this.locationsService.showOne(location.id)))};

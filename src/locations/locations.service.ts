@@ -94,7 +94,6 @@ export class LocationsService {
         loc.locationPoint = pointObject;
 
         const hugeString = this.makeHugeString(loc)
-        console.log(hugeString);
         loc.tsvector = hugeString;
         return loc;
     }
