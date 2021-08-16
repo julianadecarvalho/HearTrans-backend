@@ -51,6 +51,7 @@ export class ProvidersService {
     }
 
     async remove(id: number): Promise<void> {
+        await this.update(id, {locations: []});
         await this.providersRepository.delete(id);
     }
 }
