@@ -4,13 +4,13 @@ import { ProvidersEntity } from 'src/providers/provider.entity';
 export class CreateProviderReviewDto {
     readonly id?: number;
     
-    @IsInt()
+    //@IsInt()
     readonly rating: number;
 
-    @IsString()
+    //@IsString()
     readonly reviewBody: string;
 
-    @IsString({ each: true })
+    //@IsString({ each: true })
     readonly contentWarnings: string[];
     
     provider: ProvidersEntity;
