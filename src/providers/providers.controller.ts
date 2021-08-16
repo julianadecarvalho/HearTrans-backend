@@ -68,24 +68,29 @@ export class ProvidersController {
         };
     }
 
-    // @Get('query/:query')
-    // WIP
-    // async findProviderPerQuery(@Param('query') query: string) {
-    //     const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
-    //     if (locations === []) {
-    //         throw new NotFoundException('The search returned no providers :(');
-    //     }
-    //     for ()
-    //     const locProv = await this.getlocationsWithProviders(locations);
-    //     console.log(locProv);
-    //     const providers = locProv.reduce((acc: ProvidersEntity[], location) => acc.concat(location.providers), []);
-    //     console.log(providers);
-    //     return {
-    //         statusCode: HttpStatus.OK,
-    //         message: 'provider fetched successfully',
-    //         providers,
-    //     };
-    // }
+    @Get('query/:query')
+    async findProviderPerQuery(@Param('query') query: string) {
+        const locations: LocationsEntity[] = await this.locationsService.searchByQuery(query);
+        if (locations === []) {
+            throw new NotFoundException('The search returned no providers :(');
+        }
+        try {
+            let locationsWithProviders = [];
+            for (let location of locations) {
+                const locProv = await this.locationsService.showOne(location.id);
+                locationsWithProviders.push(locProv);
+            }
+            const providers = locationsWithProviders.reduce((acc: ProvidersEntity[], location) => acc.concat(location.providers), []);
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'provider fetched successfully',
+                providers,
+            };
+        } catch (errors) {
+            console.log(errors);
+            throw new BadRequestException(errors);
+        }
+    }
 
     @Patch(':id')
     async uppdateProvider(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateProviderDto>) {
