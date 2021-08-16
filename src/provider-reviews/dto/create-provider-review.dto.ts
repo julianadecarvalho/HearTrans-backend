@@ -1,10 +1,10 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsNumberString, IsString } from 'class-validator';
 import { ProvidersEntity } from 'src/providers/provider.entity';
 
 export class CreateProviderReviewDto {
     readonly id?: number;
     
-    @IsString()
+    @IsNumberString()
     readonly rating: number;
 
     @IsString()
