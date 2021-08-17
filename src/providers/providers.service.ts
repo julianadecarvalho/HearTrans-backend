@@ -53,7 +53,7 @@ export class ProvidersService {
     searchByQuery(query: string): Promise<ProvidersEntity[]> {
         let providers = this.providersRepository
             .createQueryBuilder('provider')
-            .leftJoinAndSelect('provider.reviews', 'provider')
+            .leftJoinAndSelect('provider.reviews', 'review')
             .leftJoinAndSelect('provider.locations', 'location')
             .where('location.tsvector @@ websearch_to_tsquery(:query)', { query: query.toLowerCase() })
             .getMany()
