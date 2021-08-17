@@ -9,6 +9,7 @@ import {
     HttpStatus,
     NotFoundException,
     BadRequestException,
+    Redirect,
 } from '@nestjs/common';
 
 import { ParseIntPipe } from '../common/parse-int.pipe';
@@ -111,7 +112,6 @@ export class LocationsController {
     async findLocationPerQuery(@Param('query') query: string) {
         let locations: LocationsEntity[] = await this.locationsService.searchByQuery(query)
 
-
         if (locations == []) {
             throw new NotFoundException('The search returned no locations :(');
         }
@@ -120,30 +120,40 @@ export class LocationsController {
             message: 'Location fetched successfully',
             locations,
         };
-
     }
 
-    @Get('search/within')
-    //NOT DONE YET
-    //add call to the searchwithin function after parsing the json
-    async findLocationWithin(@Body() data: RequestBodyLocationWithin) {
-        var axios = require('axios');
-        const address = encodeURI(data.address);
-        var config = {
-            method: 'get',
-            url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + 'key=' + KEY,
-            headers: {}
-        };
-
-        axios(config)
-            .then(function (response) {
-                const parsedJson = (JSON.parse(response.data));
-                const lat = parsedJson;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    // @Get('query/queryme')
+    // async findLocationPerQueryWithin(@Body() data: RequestBodyLocationWithin) {
+    //     try {
+    //         let locations = [];
+    //         if (data.lat == undefined || data.lon == undefined) {
+    //             if (data.text == undefined) {
+    //                 locations = await this.locationsService.showAll();
+    //             } else {
+    //                 locations = await this.locationsService.searchByQuery(data.text)
+    //             }
+    //         } else {
+    //             data.withinMiles = data.withinMiles ? data.withinMiles : 50;
+    //             if (data.text == undefined) {
+    //                 locations = await this.locationsService.searchWithin(data.withinMiles, data.lat, data.lon);
+    //             } else {
+    //                 locations = await this.locationsService.searchByQueryWithin(data.withinMiles, data.lat, data.lon, data.text);
+    //             }
+    //         }
+    //         console.log(locations);
+    //         if (locations == []) {
+    //             throw new NotFoundException('The search returned no locations :(');
+    //         }
+    //         return {
+    //             statusCode: HttpStatus.OK,
+    //             message: 'Location fetched successfully',
+    //             locations,
+    //         };
+    //     } catch (errors) {
+    //         console.log(errors);
+    //         throw new BadRequestException(errors);
+    //     }
+    // }
 
     @Patch(':id')
     async updateLocation(@Param('id', new ParseIntPipe()) id: number, @Body() data: Partial<CreateLocationDto>) {

@@ -66,24 +66,47 @@ export class LocationsService {
         return locations;
     }
 
-    searchWithin(distance: number, lat: number, lon: number, text: string): Promise<LocationsEntity[]> {
-        let origin = {
-            type: "Point",
-            coordinates: [lon, lat]
-        };
-        let locations = this.locationsRepository
-            .createQueryBuilder('location')
-            .select(['ST_Distance(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)))/1000 AS distance'])
-            .where("ST_DWithin(location, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location)) ,:range)")
-            .orderBy("distance", "ASC")
-            .setParameters({
-                // stringify GeoJSON
-                origin: JSON.stringify(origin),
-                range: distance * 1.6 //miles to KM conversion
-            })
-            .getRawMany();
-        return locations;
-    }
+    // searchWithin(distance: number, lat: number, lon: number): Promise<LocationsEntity[]> {
+    //     let origin = {
+    //         type: "Point",
+    //         coordinates: [lon, lat]
+    //     };
+    //     let locations = this.locationsRepository
+    //         .createQueryBuilder('location')
+    //         .leftJoinAndSelect('location.providers', 'provider')
+    //         .select(['*', 'ST_Distance(location.locationPoint, ST_SetSRID(ST_GeomFromGeoJSON(:origin)::geometry, ST_SRID(location.locationPoint)::integer))/1000 AS distance'])
+    //         .where("ST_DWithin(location.locationPoint, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location.locationPoint)) ,:range)")
+    //         .orderBy("distance", "ASC")
+    //         .setParameters({
+    //             // stringify GeoJSON
+    //             origin: JSON.stringify(origin),
+    //             range: distance * 16090, //miles to KM conversion
+    //         })
+    //         .getMany();
+    //     return locations;
+    // }
+
+
+    // searchByQueryWithin(distance: number, lat: number, lon: number, text: string): Promise<LocationsEntity[]> {
+    //     let origin = {
+    //         type: "Point",
+    //         coordinates: [lon, lat]
+    //     };
+    //     let locations = this.locationsRepository
+    //         .createQueryBuilder('location')
+    //         .leftJoinAndSelect('location.providers', 'provider')
+    //         .select(['*', 'ST_Distance(location.locationPoint, ST_SetSRID(ST_GeomFromGeoJSON(:origin)::geometry, ST_SRID(location.locationPoint)::integer))/1000 AS distance'])
+    //         .where("ST_DWithin(location.locationPoint, ST_SetSRID(ST_GeomFromGeoJSON(:origin), ST_SRID(location.locationPoint)) ,:range) AND location.tsvector @@ websearch_to_tsquery(:query)")
+    //         .orderBy("distance", "ASC")
+    //         .setParameters({
+    //             // stringify GeoJSON
+    //             origin: JSON.stringify(origin),
+    //             range: distance * 1609, //miles to KM conversion
+    //             query: text,
+    //         })
+    //         .getMany();
+    //     return locations;
+    // }
 
     async remove(id: number): Promise<void> {
         await this.locationsRepository.delete(id);

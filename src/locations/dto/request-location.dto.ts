@@ -1,5 +1,7 @@
+import { IsLatitude, IsLongitude } from 'class-validator';
 export class RequestBodyLocationWithin {
-    address: string;
-    distance: number;
-    return: string;
+    lat?: number;
+    lon?: number;
+    text?: string;
+    withinMiles?: number;
 }

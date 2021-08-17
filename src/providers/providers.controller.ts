@@ -27,6 +27,7 @@ export class ProvidersController {
     constructor(private providersService: ProvidersService, @Inject(forwardRef(() => LocationsService)) private locationsService: LocationsService) { }
 
     @Get()
+    @Get('query')
     async showAllProviders() {
         var providers: ProvidersEntity[] = await this.providersService.showAll();
         var providersResponses: ProviderResponse[] = providers.map(function (provider: ProvidersEntity): ProviderResponse { return provider.provAsDict() });
