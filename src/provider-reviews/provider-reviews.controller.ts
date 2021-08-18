@@ -7,8 +7,6 @@ import {
     Body,
     Param,
     HttpStatus,
-    Inject,
-    forwardRef,
     NotFoundException,
     BadRequestException,
 } from '@nestjs/common';
@@ -24,8 +22,7 @@ import { ReviewResponse } from './dto/review-response.dto';
 
 @Controller('provider/reviews')
 export class ProviderReviewsController {
-    constructor(private providerReviewsService: ProviderReviewsService, @Inject(forwardRef(() => ProvidersService))
-    @Inject(forwardRef(() => ProvidersService))
+    constructor(private providerReviewsService: ProviderReviewsService,
         private providersService: ProvidersService) { }
 
     @Get(':providerId')
@@ -68,7 +65,7 @@ export class ProviderReviewsController {
     }
 
 
-    @Patch('edit/:reviewId')
+    @Patch(':reviewId')
     async uppdateProviderReview(@Param('reviewId', new ParseIntPipe()) reviewId: number, @Body() data: Partial<CreateProviderReviewDto>) {
         const review: ProviderReviewsEntity = await this.providerReviewsService.showOne(reviewId);
         if (review === undefined) {
@@ -88,14 +85,14 @@ export class ProviderReviewsController {
         }
     }
 
-    @Delete('delete/:reviewId')
+    @Delete(':reviewId')
     async deleteProviderReview(@Param('reviewId', new ParseIntPipe()) reviewId: number) {
         const review: ProviderReviewsEntity = await this.providerReviewsService.showOne(reviewId);
         if (review === undefined) {
             throw new NotFoundException('Invalid review id');
         }
 
-        await this.providersService.remove(reviewId);
+        await this.providerReviewsService.remove(reviewId);
         return {
             statusCode: HttpStatus.OK,
             message: 'Review deleted successfully',

@@ -20,7 +20,7 @@ export class ProviderReviewsService {
 
     update(id: number, data: Partial<CreateProviderReviewDto>): Promise<ProviderReviewsEntity> {
         this.reviewRepository.update({ id }, data);
-        return this.reviewRepository.findOne({ id });
+        return this.reviewRepository.findOne(id);
     }
 
     showAll(): Promise<ProviderReviewsEntity[]> {
