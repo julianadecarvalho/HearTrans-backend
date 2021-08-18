@@ -68,7 +68,7 @@ export class ProviderReviewsController {
     }
 
 
-    @Patch(':reviewId')
+    @Patch('edit/:reviewId')
     async uppdateProviderReview(@Param('reviewId', new ParseIntPipe()) reviewId: number, @Body() data: Partial<CreateProviderReviewDto>) {
         const review: ProviderReviewsEntity = await this.providerReviewsService.showOne(reviewId);
         if (review === undefined) {
@@ -88,7 +88,7 @@ export class ProviderReviewsController {
         }
     }
 
-    @Delete(':reviewId')
+    @Delete('delete/:reviewId')
     async deleteProviderReview(@Param('reviewId', new ParseIntPipe()) reviewId: number) {
         const review: ProviderReviewsEntity = await this.providerReviewsService.showOne(reviewId);
         if (review === undefined) {
